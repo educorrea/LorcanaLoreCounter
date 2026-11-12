@@ -12,10 +12,27 @@ export default function OverlayPlayer() {
 
   useEffect(() => {
     document.body.style.background = "transparent";
+    document.body.style.width = "fit-content";
+    document.body.style.height = "fit-content";
     document.documentElement.style.background = "transparent";
+    document.documentElement.style.width = "fit-content";
+    document.documentElement.style.height = "fit-content";
+    const root = document.getElementById("root");
+    if (root) {
+      root.style.width = "fit-content";
+      root.style.height = "fit-content";
+    }
     return () => {
       document.body.style.background = "";
+      document.body.style.width = "";
+      document.body.style.height = "";
       document.documentElement.style.background = "";
+      document.documentElement.style.width = "";
+      document.documentElement.style.height = "";
+      if (root) {
+        root.style.width = "";
+        root.style.height = "";
+      }
     };
   }, []);
 
