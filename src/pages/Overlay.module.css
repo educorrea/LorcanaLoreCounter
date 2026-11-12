@@ -1,0 +1,164 @@
+/* 
+  O overlay é exibido como fonte "Página Web" no CameraFi Live.
+  O fundo transparente permite sobrepor o jogo diretamente.
+*/
+.root {
+  background: transparent;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: rgba(10, 8, 24, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ── Player Block ── */
+.playerBlock {
+  padding: 14px 20px;
+  min-width: 140px;
+  transition: background 0.4s ease;
+}
+
+.playerBlock.left {
+  text-align: left;
+}
+
+.playerBlock.right {
+  text-align: right;
+}
+
+.playerBlock.won {
+  background: rgba(167, 139, 250, 0.1);
+}
+
+.playerName {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+.loreRow {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.left .loreRow {
+  flex-direction: row;
+}
+
+.right .loreRow {
+  flex-direction: row-reverse;
+}
+
+.loreNumber {
+  font-size: 44px;
+  font-weight: 900;
+  line-height: 1;
+  color: #fff;
+  letter-spacing: -1px;
+  transition: color 0.3s ease;
+}
+
+.won .loreNumber {
+  color: #a78bfa;
+}
+
+.loreLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.progressBar {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #a78bfa);
+  border-radius: 2px;
+  transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.wonLabel {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #a78bfa;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* ── Divider ── */
+.divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  align-self: stretch;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.dividerLabel {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.2);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+/* Variante horizontal para quando a tela for pequena */
+@media (max-width: 400px) {
+  .container {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .divider {
+    flex-direction: row;
+    padding: 8px 16px;
+    border-left: none;
+    border-right: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    align-self: stretch;
+  }
+
+  .dividerLabel {
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
+  }
+}

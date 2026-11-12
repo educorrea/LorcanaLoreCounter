@@ -1,0 +1,289 @@
+.root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #0a0a14;
+  color: #fff;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  background: linear-gradient(90deg, #a78bfa, #60a5fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dotOnline {
+  background: #34d399;
+  box-shadow: 0 0 6px #34d399;
+}
+
+.dotOffline {
+  background: #f87171;
+}
+
+.status {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ── Loading ── */
+.loading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 15px;
+}
+
+/* ── Main ── */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 0;
+}
+
+/* ── Player Card ── */
+.playerCard {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 20px;
+  transition: border-color 0.3s ease;
+}
+
+.playerCard.won {
+  border-color: rgba(167, 139, 250, 0.5);
+  background: rgba(167, 139, 250, 0.06);
+}
+
+.playerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  min-height: 32px;
+}
+
+.nameButton {
+  background: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+  transition: color 0.15s;
+}
+
+.nameButton:hover .editHint {
+  opacity: 1;
+}
+
+.editHint {
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.3);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.nameInput {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(167, 139, 250, 0.5);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 4px 10px;
+  width: 180px;
+}
+
+.wonBadge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #a78bfa;
+  background: rgba(167, 139, 250, 0.15);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  border-radius: 20px;
+  padding: 3px 10px;
+  letter-spacing: 0.5px;
+}
+
+/* ── Lore Display ── */
+.loreDisplay {
+  text-align: center;
+  line-height: 1;
+  margin: 8px 0;
+}
+
+.loreNumber {
+  font-size: 80px;
+  font-weight: 900;
+  letter-spacing: -2px;
+}
+
+.loreMax {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.3);
+  font-weight: 400;
+}
+
+/* ── Progress Bar ── */
+.progressBar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 12px 0 16px;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #a78bfa);
+  border-radius: 3px;
+  transition: width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── Buttons ── */
+.buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.btn {
+  border-radius: 12px;
+  padding: 14px 0;
+  font-size: 18px;
+  font-weight: 700;
+  transition: transform 0.1s ease, opacity 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.93);
+}
+
+.btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.btnMinus {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #f87171;
+}
+
+.btnMinus:active:not(:disabled) {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.btnPlus {
+  background: rgba(124, 58, 237, 0.2);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  color: #c4b5fd;
+}
+
+.btnPlus:active:not(:disabled) {
+  background: rgba(124, 58, 237, 0.35);
+}
+
+/* ── Footer ── */
+.footer {
+  display: flex;
+  gap: 12px;
+  padding: 16px 0 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.resetBtn {
+  flex: 1;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.resetBtn:active {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.overlayLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  background: rgba(96, 165, 250, 0.1);
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  color: #60a5fa;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.overlayLink:active {
+  background: rgba(96, 165, 250, 0.2);
+}
+
+@media (min-width: 600px) {
+  .main {
+    flex-direction: row;
+  }
+
+  .playerCard {
+    flex: 1;
+  }
+}
