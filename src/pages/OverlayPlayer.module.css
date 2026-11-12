@@ -1,21 +1,16 @@
-/* Overlay vertical por jogador — transparente para OBS/CameraFi */
+/* Overlay vertical por jogador — só o painel, sem container de tela cheia */
 .root {
   background: transparent;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  padding: 20px;
+  display: inline-block;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
+  padding: 0;
+  margin: 0;
 }
 
-.rootLeft {
-  justify-content: flex-start;
-}
-
+.rootLeft,
 .rootRight {
-  justify-content: flex-end;
+  display: inline-block;
 }
 
 /* ── Panel ── */
