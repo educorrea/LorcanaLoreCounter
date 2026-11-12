@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useGameState } from "../hooks/useGameState";
 import styles from "./OverlayPlayer.module.css";
@@ -8,6 +9,15 @@ const STEPS = Array.from({ length: MAX_LORE + 1 }, (_, i) => MAX_LORE - i);
 export default function OverlayPlayer() {
   const { player } = useParams();
   const { gameState, loading } = useGameState("partida1");
+
+  useEffect(() => {
+    document.body.style.background = "transparent";
+    document.documentElement.style.background = "transparent";
+    return () => {
+      document.body.style.background = "";
+      document.documentElement.style.background = "";
+    };
+  }, []);
 
   if (loading) return null;
 

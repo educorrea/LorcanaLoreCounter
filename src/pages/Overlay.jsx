@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useGameState } from "../hooks/useGameState";
 import styles from "./Overlay.module.css";
 
@@ -28,6 +29,15 @@ function PlayerBlock({ player, side, maxLore }) {
 
 export default function Overlay() {
   const { gameState, loading, MAX_LORE } = useGameState("partida1");
+
+  useEffect(() => {
+    document.body.style.background = "transparent";
+    document.documentElement.style.background = "transparent";
+    return () => {
+      document.body.style.background = "";
+      document.documentElement.style.background = "";
+    };
+  }, []);
 
   if (loading) return null;
 
