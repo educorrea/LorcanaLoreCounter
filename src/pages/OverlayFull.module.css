@@ -1,0 +1,145 @@
+/* Força fundo transparente */
+:global(html),
+:global(body),
+:global(#root) {
+  background: transparent !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Container tela cheia — os painéis ficam nas laterais */
+.root {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+  padding: 0 12px;
+}
+
+/* ── Painel ── */
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(8, 6, 20, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px 8px 10px;
+  width: 64px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: border-color 0.4s ease;
+}
+
+.panel.won {
+  border-color: rgba(167, 139, 250, 0.6);
+  background: rgba(30, 10, 60, 0.88);
+}
+
+/* ── Labels ── */
+.topLabel {
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 6px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.bottomLabel {
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.2);
+  margin-top: 6px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.name {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 8px;
+  max-width: 52px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ── Track ── */
+.track {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 17px;
+}
+
+.num {
+  font-size: 9px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.18);
+  width: 16px;
+  text-align: right;
+  flex-shrink: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  transition: color 0.2s;
+}
+
+.filled .num  { color: rgba(255, 255, 255, 0.5); }
+.active .num  { color: #fff; font-weight: 800; font-size: 11px; }
+.win .num     { color: #a78bfa; }
+
+.bar {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.bar::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 1px;
+}
+
+.filled .bar::before         { background: rgba(124, 58, 237, 0.4); }
+.active .bar::before         { background: #7c3aed; height: 3px; }
+.win.filled .bar::before     { background: rgba(167, 139, 250, 0.65); }
+
+/* ── Marcador ── */
+.marker {
+  position: absolute;
+  left: -3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #a78bfa;
+  box-shadow: 0 0 10px #a78bfa, 0 0 20px rgba(167, 139, 250, 0.5);
+  z-index: 2;
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 8px #a78bfa, 0 0 16px rgba(167, 139, 250, 0.4); }
+  50%       { box-shadow: 0 0 14px #a78bfa, 0 0 28px rgba(167, 139, 250, 0.7); }
+}

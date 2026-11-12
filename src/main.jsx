@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Controller from "./pages/Controller";
 import Overlay from "./pages/Overlay";
+import OverlayFull from "./pages/OverlayFull";
 import OverlayPlayer from "./pages/OverlayPlayer";
 import "./index.css";
 
@@ -12,9 +13,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <Routes>
         <Route path="/" element={<Controller />} />
         <Route path="/controller" element={<Controller />} />
-        {/* Overlay horizontal com os dois jogadores (original) */}
+        {/* Overlay antigo horizontal */}
         <Route path="/overlay" element={<Overlay />} />
-        {/* Overlays verticais individuais para OBS/CameraFi */}
+        {/* Overlay tela cheia — p1 esquerda, p2 direita (recomendado para CameraFi) */}
+        <Route path="/overlay/full" element={<OverlayFull />} />
+        {/* Overlays verticais individuais */}
         <Route path="/overlay/:player" element={<OverlayPlayer />} />
       </Routes>
     </BrowserRouter>
