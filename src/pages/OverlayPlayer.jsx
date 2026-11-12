@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useGameState } from "../hooks/useGameState";
 import styles from "./OverlayPlayer.module.css";
 
@@ -8,33 +8,32 @@ const STEPS = Array.from({ length: MAX_LORE + 1 }, (_, i) => MAX_LORE - i);
 
 export default function OverlayPlayer() {
   const { player } = useParams();
+  const [searchParams] = useSearchParams();
+  const useChroma = searchParams.has("chroma");
   const { gameState, loading } = useGameState("partida1");
 
   useEffect(() => {
-    document.body.style.background = "transparent";
+    const bg = useChroma ? "#00ff00" : "transparent";
+    document.body.style.background = bg;
+    document.documentElement.style.background = bg;
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
     document.body.style.width = "fit-content";
     document.body.style.height = "fit-content";
-    document.documentElement.style.background = "transparent";
-    document.documentElement.style.width = "fit-content";
-    document.documentElement.style.height = "fit-content";
     const root = document.getElementById("root");
     if (root) {
       root.style.width = "fit-content";
       root.style.height = "fit-content";
+      root.style.background = bg;
     }
     return () => {
-      document.body.style.background = "";
-      document.body.style.width = "";
-      document.body.style.height = "";
-      document.documentElement.style.background = "";
-      document.documentElement.style.width = "";
-      document.documentElement.style.height = "";
-      if (root) {
-        root.style.width = "";
-        root.style.height = "";
-      }
+      ["background", "margin", "padding", "width", "height"].forEach((p) => {
+        document.body.style[p] = "";
+        document.documentElement.style[p] = "";
+      });
+      if (root) { root.style.width = ""; root.style.height = ""; root.style.background = ""; }
     };
-  }, []);
+  }, [useChroma]);
 
   if (loading) return null;
 
