@@ -5,6 +5,29 @@ import styles from "./OverlayFull.module.css";
 const MAX_LORE = 20;
 const STEPS = Array.from({ length: MAX_LORE + 1 }, (_, i) => MAX_LORE - i);
 
+function Diamond({ filled }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 20 20" className={`${styles.diamond} ${filled ? styles.diamondFilled : ""}`}>
+      <polygon points="10,1 19,10 10,19 1,10" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+function SeriesDiamonds({ playerKey, series, WINS_NEEDED, TOTAL_GAMES }) {
+  const type = series?.type ?? "BO3";
+  const games = series?.games ?? [];
+  const total = TOTAL_GAMES[type] ?? 3;
+  const myWins = games.filter((g) => g === playerKey).length;
+
+  return (
+    <div className={styles.seriesDiamonds}>
+      {Array.from({ length: total }).map((_, i) => (
+        <Diamond key={i} filled={i < myWins} />
+      ))}
+    </div>
+  );
+}
+
 function LoreTrack({ lore }) {
   return (
     <div className={styles.track}>
@@ -33,20 +56,26 @@ function LoreTrack({ lore }) {
   );
 }
 
-function PlayerPanel({ player, side }) {
+function PlayerPanel({ player, playerKey, side, series, WINS_NEEDED, TOTAL_GAMES }) {
   const won = player.lore >= MAX_LORE;
   return (
     <div className={`${styles.panel} ${styles[side]} ${won ? styles.won : ""}`}>
       <div className={styles.topLabel}>VITÓRIA</div>
       <LoreTrack lore={player.lore} />
       <div className={styles.bottomLabel}>START</div>
+      <SeriesDiamonds
+        playerKey={playerKey}
+        series={series}
+        WINS_NEEDED={WINS_NEEDED}
+        TOTAL_GAMES={TOTAL_GAMES}
+      />
       <div className={styles.name}>{player.name}</div>
     </div>
   );
 }
 
 export default function OverlayFull() {
-  const { gameState, loading } = useGameState("partida1");
+  const { gameState, loading, WINS_NEEDED, TOTAL_GAMES } = useGameState("partida1");
 
   useEffect(() => {
     document.body.style.background = "transparent";
@@ -61,8 +90,22 @@ export default function OverlayFull() {
 
   return (
     <div className={styles.root}>
-      <PlayerPanel player={gameState.player1} side="left" />
-      <PlayerPanel player={gameState.player2} side="right" />
+      <PlayerPanel
+        player={gameState.player1}
+        playerKey="p1"
+        side="left"
+        series={gameState.series}
+        WINS_NEEDED={WINS_NEEDED}
+        TOTAL_GAMES={TOTAL_GAMES}
+      />
+      <PlayerPanel
+        player={gameState.player2}
+        playerKey="p2"
+        side="right"
+        series={gameState.series}
+        WINS_NEEDED={WINS_NEEDED}
+        TOTAL_GAMES={TOTAL_GAMES}
+      />
     </div>
   );
 }

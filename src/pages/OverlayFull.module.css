@@ -149,3 +149,22 @@
   0%, 100% { box-shadow: 0 0 8px #a78bfa, 0 0 16px rgba(167, 139, 250, 0.4); }
   50%       { box-shadow: 0 0 14px #a78bfa, 0 0 28px rgba(167, 139, 250, 0.7); }
 }
+
+/* ── Series Diamonds ── */
+.seriesDiamonds {
+  display: flex;
+  gap: clamp(3px, 0.6vh, 8px);
+  justify-content: center;
+  margin-top: 0.5vh;
+  flex-shrink: 0;
+}
+
+.diamond polygon {
+  fill: transparent;
+  stroke: rgba(255, 255, 255, 0.25);
+}
+
+.diamondFilled polygon {
+  fill: #a78bfa;
+  stroke: #a78bfa;
+}
