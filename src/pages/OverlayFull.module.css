@@ -28,8 +28,9 @@
   background: rgba(8, 6, 20, 0.82);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
-  padding: 12px 8px 10px;
-  width: 64px;
+  padding: 1.5vh 8px 1.2vh;
+  width: clamp(50px, 7vw, 110px);
+  height: 88vh;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   transition: border-color 0.4s ease;
@@ -42,38 +43,41 @@
 
 /* ── Labels ── */
 .topLabel {
-  font-size: 7px;
+  font-size: clamp(6px, 1vh, 14px);
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.35);
-  margin-bottom: 6px;
+  margin-bottom: 0.6vh;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  flex-shrink: 0;
 }
 
 .bottomLabel {
-  font-size: 7px;
+  font-size: clamp(6px, 1vh, 14px);
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.2);
-  margin-top: 6px;
+  margin-top: 0.6vh;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  flex-shrink: 0;
 }
 
 .name {
-  font-size: 8px;
+  font-size: clamp(6px, 1vh, 14px);
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.5);
-  margin-top: 8px;
-  max-width: 52px;
+  margin-top: 0.8vh;
+  max-width: 100%;
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  flex-shrink: 0;
 }
 
 /* ── Track ── */
@@ -81,28 +85,30 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  flex: 1;
 }
 
 .step {
   display: flex;
   align-items: center;
   gap: 4px;
-  height: 17px;
+  flex: 1;
+  height: auto;
 }
 
 .num {
-  font-size: 9px;
+  font-size: clamp(8px, 1.4vh, 18px);
   font-weight: 600;
   color: rgba(255, 255, 255, 0.18);
-  width: 16px;
+  width: clamp(14px, 2vh, 24px);
   text-align: right;
   flex-shrink: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  transition: color 0.2s;
+  transition: color 0.2s, font-size 0.2s;
 }
 
 .filled .num  { color: rgba(255, 255, 255, 0.5); }
-.active .num  { color: #fff; font-weight: 800; font-size: 11px; }
+.active .num  { color: #fff; font-weight: 800; font-size: clamp(10px, 2vh, 24px); }
 .win .num     { color: #a78bfa; }
 
 .bar {
@@ -130,8 +136,8 @@
 .marker {
   position: absolute;
   left: -3px;
-  width: 10px;
-  height: 10px;
+  width: clamp(8px, 1.8vh, 20px);
+  height: clamp(8px, 1.8vh, 20px);
   border-radius: 50%;
   background: #a78bfa;
   box-shadow: 0 0 10px #a78bfa, 0 0 20px rgba(167, 139, 250, 0.5);
