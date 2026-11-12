@@ -1,3 +1,14 @@
+/* Força html/body/root transparentes e do tamanho do conteúdo */
+:global(html),
+:global(body),
+:global(#root) {
+  background: transparent !important;
+  width: fit-content !important;
+  height: fit-content !important;
+  min-height: unset !important;
+  overflow: visible !important;
+}
+
 /* Overlay vertical por jogador — painel sempre no canto superior esquerdo */
 .root {
   background: transparent;
@@ -9,7 +20,6 @@
   margin: 0;
 }
 
-/* Sem diferença visual entre p1 e p2 — o usuário posiciona no CameraFi/OBS */
 .rootLeft,
 .rootRight {
   display: inline-block;
