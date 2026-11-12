@@ -16,7 +16,7 @@ function Diamond({ filled }) {
 function SeriesDiamonds({ playerKey, series, WINS_NEEDED, TOTAL_GAMES }) {
   const type = series?.type ?? "BO3";
   const games = series?.games ?? [];
-  const total = TOTAL_GAMES[type] ?? 3;
+  const total = WINS_NEEDED[type] ?? 2;
   const myWins = games.filter((g) => g === playerKey).length;
 
   return (

@@ -22,7 +22,7 @@ function Diamond({ filled, dim }) {
 function SeriesRow({ series, WINS_NEEDED, TOTAL_GAMES }) {
   const type = series?.type ?? "BO3";
   const games = series?.games ?? [];
-  const total = TOTAL_GAMES[type] ?? 3;
+  const total = WINS_NEEDED[type] ?? 2;
   const p1Wins = games.filter((g) => g === "p1").length;
   const p2Wins = games.filter((g) => g === "p2").length;
   const winsNeeded = WINS_NEEDED[type] ?? 2;
@@ -69,7 +69,7 @@ function PlayerPanel({ player, playerNum, onLoreChange, onNameChange, onWin, ser
   const type = series?.type ?? "BO3";
   const games = series?.games ?? [];
   const winsNeeded = WINS_NEEDED[type] ?? 2;
-  const total = TOTAL_GAMES[type] ?? 3;
+  const total = WINS_NEEDED[type] ?? 2;
   const playerKey = playerNum === 1 ? "p1" : "p2";
   const myWins = games.filter((g) => g === playerKey).length;
   const oppWins = games.filter((g) => g !== playerKey).length;
