@@ -1,0 +1,174 @@
+/* Overlay vertical por jogador — transparente para OBS/CameraFi */
+.root {
+  background: transparent;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.rootLeft {
+  justify-content: flex-start;
+}
+
+.rootRight {
+  justify-content: flex-end;
+}
+
+/* ── Panel ── */
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  background: rgba(8, 6, 20, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px 8px 10px;
+  width: 68px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: border-color 0.4s ease;
+}
+
+.panelWon {
+  border-color: rgba(167, 139, 250, 0.6);
+  background: rgba(30, 10, 60, 0.88);
+}
+
+/* ── Labels ── */
+.topLabel {
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 8px;
+  writing-mode: horizontal-tb;
+}
+
+.bottomLabel {
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.2);
+  margin-top: 8px;
+}
+
+.playerName {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 10px;
+  max-width: 52px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Track ── */
+.track {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+
+/* ── Step ── */
+.step {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 18px;
+  position: relative;
+}
+
+.stepNumber {
+  font-size: 9px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.2);
+  width: 16px;
+  text-align: right;
+  transition: color 0.25s ease, font-weight 0.25s;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.stepFilled .stepNumber {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.stepActive .stepNumber {
+  color: #fff;
+  font-weight: 800;
+  font-size: 11px;
+}
+
+.stepWin .stepNumber {
+  color: #a78bfa;
+  font-size: 10px;
+}
+
+/* ── Step bar ── */
+.stepBar {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.stepBar::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 1px;
+}
+
+.stepFilled .stepBar::before {
+  background: rgba(124, 58, 237, 0.45);
+}
+
+.stepActive .stepBar::before {
+  background: #7c3aed;
+  height: 3px;
+}
+
+.stepWin.stepFilled .stepBar::before {
+  background: rgba(167, 139, 250, 0.7);
+}
+
+/* ── Marker (current lore indicator) ── */
+.marker {
+  position: absolute;
+  left: -2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #a78bfa;
+  box-shadow: 0 0 10px #a78bfa, 0 0 20px rgba(167, 139, 250, 0.5);
+  z-index: 2;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 8px #a78bfa, 0 0 16px rgba(167, 139, 250, 0.4); }
+  50%       { box-shadow: 0 0 14px #a78bfa, 0 0 28px rgba(167, 139, 250, 0.7); }
+}
+
+/* Lore 0 — no step active, show marker at bottom */
+.step:last-child .stepBar .marker {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: none;
+  animation: none;
+}
