@@ -1,13 +1,4 @@
-/* Força html/body/root transparentes e do tamanho do conteúdo */
-:global(html),
-:global(body),
-:global(#root) {
-  background: transparent !important;
-  width: fit-content !important;
-  height: fit-content !important;
-  min-height: unset !important;
-  overflow: visible !important;
-}
+/* Fundo transparente e tamanho do conteúdo aplicados via JS no componente */
 
 /* Overlay vertical por jogador — painel sempre no canto superior esquerdo */
 .root {

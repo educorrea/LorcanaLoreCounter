@@ -2,15 +2,7 @@
   O overlay é exibido como fonte "Página Web" no CameraFi Live.
   O fundo transparente permite sobrepor o jogo diretamente.
 */
-:global(html),
-:global(body),
-:global(#root) {
-  background: transparent !important;
-  width: fit-content !important;
-  height: fit-content !important;
-  min-height: unset !important;
-  overflow: visible !important;
-}
+/* Fundo transparente aplicado via JS no componente */
 
 .root {
   background: transparent;

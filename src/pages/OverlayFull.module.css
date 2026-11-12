@@ -1,13 +1,4 @@
-/* Força fundo transparente */
-:global(html),
-:global(body),
-:global(#root) {
-  background: transparent !important;
-  width: 100% !important;
-  height: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
+/* Fundo transparente aplicado via JS no componente */
 
 /* Container tela cheia — os painéis ficam nas laterais */
 .root {
