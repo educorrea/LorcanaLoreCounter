@@ -37,18 +37,19 @@ export default function InkDots({ colors, size = 20, className = "" }) {
         <rect x="19.2" y="0" width="1.6" height="40" fill="rgba(0,0,0,0.55)" />
       </g>
 
+      {/* Outer black rim — avoids clash with Amber/yellow ink */}
       <polygon
         points={hex}
         fill="none"
-        stroke="#0a0a0a"
-        strokeWidth="3"
+        stroke="#111111"
+        strokeWidth="3.4"
         strokeLinejoin="round"
       />
       <polygon
         points={hex}
         fill="none"
-        stroke="rgba(255,255,255,0.22)"
-        strokeWidth="1.1"
+        stroke="rgba(255,255,255,0.18)"
+        strokeWidth="1"
         strokeLinejoin="round"
       />
     </svg>

@@ -89,8 +89,8 @@
   background: rgba(8, 6, 20, 0.82);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
-  padding: 1.2vh 6px 1.4vh;
-  width: clamp(64px, 8.5vw, 130px);
+  padding: 1vh 6px 1.6vh;
+  width: clamp(72px, 9vw, 140px);
   height: 88vh;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -118,27 +118,29 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.55vh;
-  margin-top: 0.6vh;
-  flex-shrink: 0;
+  gap: 0.7vh;
+  margin-top: 0.8vh;
+  flex: 0 0 auto;
   width: 100%;
+  min-height: 18vh;
+  justify-content: flex-end;
 }
 
 .bottomLabel {
-  font-size: clamp(8px, 1.2vh, 13px);
+  font-size: clamp(9px, 1.3vh, 14px);
   font-weight: 800;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.28);
+  color: rgba(255, 255, 255, 0.32);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 .name {
-  font-size: clamp(11px, 1.7vh, 18px);
+  font-size: clamp(13px, 2vh, 20px);
   font-weight: 800;
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.92);
   max-width: 100%;
   text-align: center;
   overflow: hidden;
@@ -151,14 +153,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.45vh;
+  gap: 0.55vh;
 }
 
 .record {
-  font-size: clamp(11px, 1.5vh, 16px);
+  font-size: clamp(12px, 1.7vh, 18px);
   font-weight: 800;
   letter-spacing: 0.6px;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.78);
   font-variant-numeric: tabular-nums;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -168,9 +170,10 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  flex: 1;
+  flex: 1 1 auto;
   min-height: 0;
-  justify-content: space-between;
+  max-height: 58vh;
+  justify-content: space-evenly;
   gap: 0;
 }
 
@@ -178,13 +181,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1;
-  min-height: 0;
+  flex: 0 0 auto;
+  height: clamp(12px, 2.35vh, 22px);
   line-height: 1;
 }
 
 .num {
-  font-size: clamp(10px, 1.55vh, 17px);
+  font-size: clamp(11px, 1.65vh, 18px);
   font-weight: 700;
   color: rgba(255, 255, 255, 0.16);
   text-align: center;

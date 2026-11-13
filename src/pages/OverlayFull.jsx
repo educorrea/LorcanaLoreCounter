@@ -10,7 +10,7 @@ const STEPS = Array.from({ length: MAX_LORE + 1 }, (_, i) => MAX_LORE - i);
 
 function Diamond({ filled }) {
   return (
-    <svg width="18" height="18" viewBox="0 0 20 20" className={`${styles.diamond} ${filled ? styles.diamondFilled : ""}`}>
+    <svg width="20" height="20" viewBox="0 0 20 20" className={`${styles.diamond} ${filled ? styles.diamondFilled : ""}`}>
       <polygon points="10,1 19,10 10,19 1,10" strokeWidth="1.5" />
     </svg>
   );
@@ -71,7 +71,7 @@ function PlayerPanel({ player, playerKey, side, series, WINS_NEEDED }) {
         />
         <div className={styles.name}>{player.name}</div>
         <div className={styles.playerMeta}>
-          <InkDots colors={player.colors} size={28} />
+          <InkDots colors={player.colors} size={32} />
           <span className={styles.record}>{formatRecord(player.record)}</span>
         </div>
       </div>
