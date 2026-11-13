@@ -166,21 +166,6 @@ export default function Config() {
         <div className={styles.loading}>Conectando...</div>
       ) : (
         <div className={styles.configMain}>
-          <p className={styles.installHint}>
-            <strong>Apps separados no Android</strong>
-            <br />
-            1. Desinstale o app antigo “Lorcana/Contador” (segurar ícone →
-            Desinstalar).
-            <br />
-            2. No Chrome, abra <strong>/config/</strong> → ⋮ → Instalar app
-            (ícone azul).
-            <br />
-            3. No Chrome, abra <strong>/contador/</strong> → ⋮ → Instalar app
-            (ícone roxo).
-            <br />
-            Não instale de dentro de um app já instalado — use o Chrome.
-          </p>
-
           <section className={styles.configSection}>
             <h2 className={styles.configTitle}>Tipo de série</h2>
             <div className={styles.seriesSelector}>

@@ -164,21 +164,6 @@
   gap: 14px;
 }
 
-.installHint {
-  font-size: 13px;
-  line-height: 1.45;
-  color: rgba(255, 255, 255, 0.55);
-  background: rgba(96, 165, 250, 0.08);
-  border: 1px solid rgba(96, 165, 250, 0.2);
-  border-radius: 12px;
-  padding: 12px 14px;
-}
-
-.installHint strong {
-  color: #93c5fd;
-  font-weight: 700;
-}
-
 .configSection {
   display: flex;
   flex-direction: column;
