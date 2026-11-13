@@ -33,21 +33,22 @@ export default function InkDots({ colors, size = 20, className = "" }) {
       <g clipPath={`url(#${clipId})`}>
         <rect x="0" y="0" width="20" height="40" fill={left} />
         <rect x="20" y="0" width="20" height="40" fill={right} />
-        <rect x="19.2" y="0" width="1.6" height="40" fill="#E8C76A" />
+        {/* Dark divider so amber/yellow still reads clearly */}
+        <rect x="19.2" y="0" width="1.6" height="40" fill="rgba(0,0,0,0.55)" />
       </g>
 
       <polygon
         points={hex}
         fill="none"
-        stroke="#E8C76A"
-        strokeWidth="2.6"
+        stroke="#0a0a0a"
+        strokeWidth="3"
         strokeLinejoin="round"
       />
       <polygon
         points={hex}
         fill="none"
-        stroke="rgba(245,240,220,0.45)"
-        strokeWidth="1"
+        stroke="rgba(255,255,255,0.22)"
+        strokeWidth="1.1"
         strokeLinejoin="round"
       />
     </svg>

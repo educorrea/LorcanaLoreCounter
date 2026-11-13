@@ -10,7 +10,7 @@ const STEPS = Array.from({ length: MAX_LORE + 1 }, (_, i) => MAX_LORE - i);
 
 function Diamond({ filled }) {
   return (
-    <svg width="14" height="14" viewBox="0 0 20 20" className={`${styles.diamond} ${filled ? styles.diamondFilled : ""}`}>
+    <svg width="18" height="18" viewBox="0 0 20 20" className={`${styles.diamond} ${filled ? styles.diamondFilled : ""}`}>
       <polygon points="10,1 19,10 10,19 1,10" strokeWidth="1.5" />
     </svg>
   );
@@ -49,9 +49,6 @@ function LoreTrack({ lore }) {
             ].join(" ")}
           >
             <span className={styles.num}>{step}</span>
-            <div className={styles.bar}>
-              {isActive && <div className={styles.marker} />}
-            </div>
           </div>
         );
       })}
@@ -65,16 +62,18 @@ function PlayerPanel({ player, playerKey, side, series, WINS_NEEDED }) {
     <div className={`${styles.panel} ${styles[side]} ${won ? styles.won : ""}`}>
       <div className={styles.topLabel}>VITÓRIA</div>
       <LoreTrack lore={player.lore} />
-      <div className={styles.bottomLabel}>START</div>
-      <SeriesDiamonds
-        playerKey={playerKey}
-        series={series}
-        WINS_NEEDED={WINS_NEEDED}
-      />
-      <div className={styles.name}>{player.name}</div>
-      <div className={styles.playerMeta}>
-        <InkDots colors={player.colors} size={22} />
-        <span className={styles.record}>{formatRecord(player.record)}</span>
+      <div className={styles.footer}>
+        <div className={styles.bottomLabel}>START</div>
+        <SeriesDiamonds
+          playerKey={playerKey}
+          series={series}
+          WINS_NEEDED={WINS_NEEDED}
+        />
+        <div className={styles.name}>{player.name}</div>
+        <div className={styles.playerMeta}>
+          <InkDots colors={player.colors} size={28} />
+          <span className={styles.record}>{formatRecord(player.record)}</span>
+        </div>
       </div>
     </div>
   );
