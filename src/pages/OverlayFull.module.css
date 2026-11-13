@@ -11,6 +11,94 @@
   padding: 0 12px;
 }
 
+/* ── Round / Time (topo centro) ── */
+.roundBar {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  background: rgba(8, 6, 20, 0.88);
+  border: 1px solid rgba(167, 139, 250, 0.35);
+  border-radius: 10px;
+  overflow: hidden;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  min-width: min(420px, 46vw);
+  z-index: 5;
+}
+
+.roundBlock {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px 10px;
+  gap: 2px;
+}
+
+.roundDivider {
+  width: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  align-self: stretch;
+}
+
+.roundLabel {
+  font-size: clamp(8px, 1.1vh, 11px);
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.roundValue {
+  font-size: clamp(13px, 2vh, 20px);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.5px;
+  text-align: center;
+  max-width: 22vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.timeValue {
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(16px, 2.4vh, 26px);
+  font-weight: 900;
+  color: #c4b5fd;
+  letter-spacing: 1px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.timeExpired {
+  color: #f87171;
+}
+
+.playerMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: 0.5vh;
+  flex-shrink: 0;
+}
+
+.record {
+  font-size: clamp(8px, 1.1vh, 13px);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.45);
+  font-variant-numeric: tabular-nums;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
 /* ── Painel ── */
 .panel {
   display: flex;
