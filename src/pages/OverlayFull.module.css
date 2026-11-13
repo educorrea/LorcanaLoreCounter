@@ -16,20 +16,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(8, 6, 20, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #08060e;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   padding: 1.5vh 8px 1.2vh;
   width: clamp(50px, 7vw, 110px);
   height: 88vh;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   transition: border-color 0.4s ease;
 }
 
 .panel.won {
   border-color: rgba(167, 139, 250, 0.6);
-  background: rgba(30, 10, 60, 0.88);
+  background: #1a0a3c;
 }
 
 /* ── Labels ── */
