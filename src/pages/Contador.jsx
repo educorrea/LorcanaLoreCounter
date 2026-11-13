@@ -17,44 +17,6 @@ function Diamond({ filled, dim }) {
   );
 }
 
-function SeriesRow({ series, WINS_NEEDED }) {
-  const type = series?.type ?? "BO3";
-  const games = series?.games ?? [];
-  const total = WINS_NEEDED[type] ?? 2;
-  const p1Wins = games.filter((g) => g === "p1").length;
-  const p2Wins = games.filter((g) => g === "p2").length;
-  const winsNeeded = WINS_NEEDED[type] ?? 2;
-  const seriesOver = p1Wins >= winsNeeded || p2Wins >= winsNeeded;
-  const currentGame = games.length + 1;
-
-  return (
-    <div className={styles.seriesRow}>
-      <div className={styles.seriesDiamonds}>
-        {Array.from({ length: total }).map((_, i) => {
-          const winner = games[i];
-          return (
-            <div key={i} className={styles.seriesGame}>
-              <Diamond filled={winner === "p1"} dim={16} />
-              <span className={styles.seriesGameNum}>{i + 1}</span>
-              <Diamond filled={winner === "p2"} dim={16} />
-            </div>
-          );
-        })}
-      </div>
-      {!seriesOver && (
-        <span className={styles.seriesGameLabel}>
-          {type} · Jogo {currentGame}
-        </span>
-      )}
-      {seriesOver && (
-        <span className={styles.seriesWinner}>
-          {p1Wins >= winsNeeded ? "P1" : "P2"} venceu a série!
-        </span>
-      )}
-    </div>
-  );
-}
-
 function PlayerPanel({ player, playerNum, onLoreChange, onWin, series, WINS_NEEDED, maxLore }) {
   const type = series?.type ?? "BO3";
   const games = series?.games ?? [];
@@ -167,10 +129,6 @@ export default function Contador() {
           {timer.label}
         </span>
       </div>
-
-      {!loading && (
-        <SeriesRow series={gameState.series} WINS_NEEDED={WINS_NEEDED} />
-      )}
 
       {loading ? (
         <div className={styles.loading}>Conectando...</div>
