@@ -58,11 +58,15 @@ function LoreTrack({ lore }) {
 
 function PlayerPanel({ player, playerKey, side, series, WINS_NEEDED, TOTAL_GAMES }) {
   const won = player.lore >= MAX_LORE;
+  const v = player.vitorias ?? 0;
+  const d = player.derrotas ?? 0;
+  const e = player.empates ?? 0;
+
   return (
     <div className={`${styles.panel} ${styles[side]} ${won ? styles.won : ""}`}>
       <div className={styles.topLabel}>VITÓRIA</div>
       <LoreTrack lore={player.lore} />
-      <div className={styles.bottomLabel}>START</div>
+      <div className={styles.bottomLabel}>INÍCIO</div>
       <SeriesDiamonds
         playerKey={playerKey}
         series={series}
@@ -70,6 +74,7 @@ function PlayerPanel({ player, playerKey, side, series, WINS_NEEDED, TOTAL_GAMES
         TOTAL_GAMES={TOTAL_GAMES}
       />
       <div className={styles.name}>{player.name}</div>
+      <div className={styles.record}>{v}V {d}D {e}E</div>
     </div>
   );
 }
@@ -98,6 +103,10 @@ export default function OverlayFull() {
         WINS_NEEDED={WINS_NEEDED}
         TOTAL_GAMES={TOTAL_GAMES}
       />
+      <div className={styles.centerInfo}>
+        <div className={styles.rodadaLabel}>RODADA</div>
+        <div className={styles.rodadaNum}>{gameState.rodada ?? 1}</div>
+      </div>
       <PlayerPanel
         player={gameState.player2}
         playerKey="p2"

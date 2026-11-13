@@ -10,11 +10,12 @@ export const WINS_NEEDED = { BO1: 1, BO3: 2, BO5: 3 };
 export const TOTAL_GAMES = { BO1: 1, BO3: 3, BO5: 5 };
 
 const defaultState = {
-  player1: { name: "Jogador 1", lore: 0 },
-  player2: { name: "Jogador 2", lore: 0 },
+  player1: { name: "Jogador 1", lore: 0, vitorias: 0, derrotas: 0, empates: 0 },
+  player2: { name: "Jogador 2", lore: 0, vitorias: 0, derrotas: 0, empates: 0 },
+  rodada: 1,
   series: {
     type: "BO3",
-    games: [], // array of "p1" | "p2" — winner of each completed game
+    games: [],
   },
 };
 
@@ -39,9 +40,12 @@ export function useGameState(matchId = "default") {
       setLoading(false);
       const data = snap.val();
       if (data) {
-        // Ensure series exists for older saves
+        // Ensure fields exist for older saves
         if (!data.series) data.series = defaultState.series;
         if (!data.series.games) data.series.games = [];
+        if (!data.rodada) data.rodada = 1;
+        if (!data.player1.vitorias) data.player1 = { ...defaultState.player1, ...data.player1 };
+        if (!data.player2.vitorias) data.player2 = { ...defaultState.player2, ...data.player2 };
         setGameState(data);
       } else {
         set(matchRef, defaultState);
@@ -99,6 +103,21 @@ export function useGameState(matchId = "default") {
     }
   }, [matchId]);
 
+  const setRodada = useCallback(async (delta) => {
+    const snap = await get(ref(db, `matches/${matchId}/rodada`));
+    const current = snap.val() ?? 1;
+    const next = Math.max(1, current + delta);
+    await set(ref(db, `matches/${matchId}/rodada`), next);
+  }, [matchId]);
+
+  const updateRecord = useCallback(async (player, field, delta) => {
+    const key = player === 1 ? "player1" : "player2";
+    const fieldRef = ref(db, `matches/${matchId}/${key}/${field}`);
+    const snap = await get(fieldRef);
+    const current = snap.val() ?? 0;
+    await set(fieldRef, Math.max(0, current + delta));
+  }, [matchId]);
+
   const resetMatch = useCallback(async () => {
     const snap = await get(matchRef);
     const data = snap.val();
@@ -122,6 +141,8 @@ export function useGameState(matchId = "default") {
     updateName,
     setSeriesType,
     recordWin,
+    setRodada,
+    updateRecord,
     resetMatch,
     MAX_LORE,
     WINS_NEEDED,

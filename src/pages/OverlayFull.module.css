@@ -139,6 +139,45 @@
   50%       { box-shadow: 0 0 14px #a78bfa, 0 0 28px rgba(167, 139, 250, 0.7); }
 }
 
+/* ── Record (V/D/E) ── */
+.record {
+  font-size: clamp(6px, 0.9vh, 12px);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 0.4vh;
+  letter-spacing: 1px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  flex-shrink: 0;
+}
+
+/* ── Rodada (center) ── */
+.centerInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3vh;
+  flex-shrink: 0;
+  padding: 0 clamp(6px, 1vw, 16px);
+}
+
+.rodadaLabel {
+  font-size: clamp(6px, 0.9vh, 12px);
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.rodadaNum {
+  font-size: clamp(18px, 3.5vh, 48px);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
 /* ── Series Diamonds ── */
 .seriesDiamonds {
   display: flex;

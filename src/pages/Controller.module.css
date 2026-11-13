@@ -66,6 +66,94 @@
   color: rgba(255, 255, 255, 0.4);
 }
 
+/* ── Rodada Row ── */
+.rodadaRow {
+  padding: 8px 0 0;
+  flex-shrink: 0;
+}
+
+/* ── Number Picker ── */
+.picker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.pickerLabel {
+  font-size: clamp(12px, 3vw, 15px);
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  min-width: 20px;
+}
+
+.pickerControls {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.pickerBtn {
+  background: none;
+  border: none;
+  color: #c4b5fd;
+  font-size: clamp(18px, 5vw, 26px);
+  font-weight: 700;
+  width: clamp(38px, 10vw, 52px);
+  height: clamp(36px, 9vw, 48px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pickerBtn:active:not(:disabled) {
+  background: rgba(167, 139, 250, 0.2);
+}
+
+.pickerBtn:disabled {
+  opacity: 0.25;
+}
+
+.pickerValue {
+  font-size: clamp(18px, 5vw, 26px);
+  font-weight: 800;
+  color: #fff;
+  min-width: clamp(28px, 7vw, 40px);
+  text-align: center;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0 4px;
+}
+
+/* ── V/D/E Record Row ── */
+.recordRow {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+.recordRow .picker {
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.recordRow .pickerLabel {
+  font-size: 11px;
+}
+
 /* ── Series Selector ── */
 .seriesSelector {
   display: flex;

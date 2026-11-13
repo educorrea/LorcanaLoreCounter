@@ -2,6 +2,19 @@ import { useState } from "react";
 import { useGameState } from "../hooks/useGameState";
 import styles from "./Controller.module.css";
 
+function NumberPicker({ label, value, onDecrement, onIncrement, min = 0 }) {
+  return (
+    <div className={styles.picker}>
+      <span className={styles.pickerLabel}>{label}</span>
+      <div className={styles.pickerControls}>
+        <button className={styles.pickerBtn} onClick={onDecrement} disabled={value <= min}>−</button>
+        <span className={styles.pickerValue}>{value}</span>
+        <button className={styles.pickerBtn} onClick={onIncrement}>+</button>
+      </div>
+    </div>
+  );
+}
+
 // Diamond SVG — filled or empty
 function Diamond({ filled, dim }) {
   return (
@@ -57,7 +70,7 @@ function SeriesRow({ series, WINS_NEEDED, TOTAL_GAMES }) {
   );
 }
 
-function PlayerPanel({ player, playerNum, onLoreChange, onNameChange, onWin, series, WINS_NEEDED, TOTAL_GAMES, maxLore }) {
+function PlayerPanel({ player, playerNum, onLoreChange, onNameChange, onWin, onRecord, series, WINS_NEEDED, TOTAL_GAMES, maxLore }) {
   const [editingName, setEditingName] = useState(false);
   const [tempName, setTempName] = useState(player.name);
 
@@ -158,6 +171,13 @@ function PlayerPanel({ player, playerNum, onLoreChange, onNameChange, onWin, ser
           {player.name} venceu o jogo {games.length + 1}
         </button>
       )}
+
+      {/* V/D/E record pickers */}
+      <div className={styles.recordRow}>
+        <NumberPicker label="V" value={player.vitorias ?? 0} onDecrement={() => onRecord(playerNum, "vitorias", -1)} onIncrement={() => onRecord(playerNum, "vitorias", 1)} />
+        <NumberPicker label="D" value={player.derrotas ?? 0} onDecrement={() => onRecord(playerNum, "derrotas", -1)} onIncrement={() => onRecord(playerNum, "derrotas", 1)} />
+        <NumberPicker label="E" value={player.empates ?? 0} onDecrement={() => onRecord(playerNum, "empates", -1)} onIncrement={() => onRecord(playerNum, "empates", 1)} />
+      </div>
     </div>
   );
 }
@@ -165,7 +185,8 @@ function PlayerPanel({ player, playerNum, onLoreChange, onNameChange, onWin, ser
 export default function Controller() {
   const {
     gameState, connected, loading,
-    updateLore, updateName, setSeriesType, recordWin, resetMatch,
+    updateLore, updateName, setSeriesType, recordWin,
+    setRodada, updateRecord, resetMatch,
     MAX_LORE, WINS_NEEDED, TOTAL_GAMES,
   } = useGameState("partida1");
 
@@ -183,6 +204,19 @@ export default function Controller() {
           <span className={styles.status}>{connected ? "Online" : "Offline"}</span>
         </div>
       </header>
+
+      {/* Rodada picker */}
+      {!loading && (
+        <div className={styles.rodadaRow}>
+          <NumberPicker
+            label="Rodada"
+            value={gameState.rodada ?? 1}
+            onDecrement={() => setRodada(-1)}
+            onIncrement={() => setRodada(1)}
+            min={1}
+          />
+        </div>
+      )}
 
       {/* Series type selector */}
       <div className={styles.seriesSelector}>
@@ -216,6 +250,7 @@ export default function Controller() {
             onLoreChange={updateLore}
             onNameChange={updateName}
             onWin={recordWin}
+            onRecord={updateRecord}
             series={gameState.series}
             WINS_NEEDED={WINS_NEEDED}
             TOTAL_GAMES={TOTAL_GAMES}
@@ -227,6 +262,7 @@ export default function Controller() {
             onLoreChange={updateLore}
             onNameChange={updateName}
             onWin={recordWin}
+            onRecord={updateRecord}
             series={gameState.series}
             WINS_NEEDED={WINS_NEEDED}
             TOTAL_GAMES={TOTAL_GAMES}
