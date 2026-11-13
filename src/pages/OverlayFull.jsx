@@ -63,7 +63,7 @@ function PlayerPanel({ player, playerKey, side, series, WINS_NEEDED }) {
       <div className={styles.topLabel}>VITÓRIA</div>
       <LoreTrack lore={player.lore} />
       <div className={styles.footer}>
-        <div className={styles.bottomLabel}>START</div>
+        <div className={styles.bottomLabel}>INÍCIO</div>
         <SeriesDiamonds
           playerKey={playerKey}
           series={series}
@@ -85,12 +85,12 @@ function RoundClock({ round, timer }) {
   return (
     <div className={styles.roundBar}>
       <div className={styles.roundBlock}>
-        <span className={styles.roundLabel}>ROUND</span>
+        <span className={styles.roundLabel}>RODADA</span>
         <span className={styles.roundValue}>{round}</span>
       </div>
       <div className={styles.roundDivider} />
       <div className={styles.roundBlock}>
-        <span className={styles.roundLabel}>TIME</span>
+        <span className={styles.roundLabel}>TEMPO</span>
         <span className={`${styles.timeValue} ${expired ? styles.timeExpired : ""}`}>{label}</span>
       </div>
     </div>

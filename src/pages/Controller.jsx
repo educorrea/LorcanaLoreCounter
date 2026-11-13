@@ -137,6 +137,33 @@ function PlayerPanel({ player, playerNum, onLoreChange, onWin, series, WINS_NEED
   );
 }
 
+function NumberPicker({ value, min = 0, max = 99, onChange, ariaLabel }) {
+  const n = Number(value) || 0;
+  return (
+    <div className={styles.numberPicker}>
+      <button
+        type="button"
+        className={styles.pickerBtn}
+        onClick={() => onChange(Math.max(min, n - 1))}
+        disabled={n <= min}
+        aria-label={`Diminuir ${ariaLabel || ""}`}
+      >
+        −
+      </button>
+      <span className={styles.pickerValue}>{n}</span>
+      <button
+        type="button"
+        className={styles.pickerBtn}
+        onClick={() => onChange(Math.min(max, n + 1))}
+        disabled={n >= max}
+        aria-label={`Aumentar ${ariaLabel || ""}`}
+      >
+        +
+      </button>
+    </div>
+  );
+}
+
 function ColorPicker({ colors, onChange }) {
   const selected = colors ?? [];
 
@@ -214,19 +241,18 @@ function ConfigPlayerCard({
       <label className={styles.fieldLabel}>Campeonato (V–D–E)</label>
       <div className={styles.recordInputs}>
         {[
-          ["wins", "V"],
-          ["losses", "D"],
-          ["draws", "E"],
+          ["wins", "Vitórias"],
+          ["losses", "Derrotas"],
+          ["draws", "Empates"],
         ].map(([field, label]) => (
           <div key={field} className={styles.recordField}>
             <span className={styles.recordLabel}>{label}</span>
-            <input
-              className={styles.recordInput}
-              type="number"
+            <NumberPicker
+              value={player.record?.[field] ?? 0}
               min={0}
               max={99}
-              value={player.record?.[field] ?? 0}
-              onChange={(e) => onRecordChange(playerNum, field, e.target.value)}
+              ariaLabel={label}
+              onChange={(next) => onRecordChange(playerNum, field, next)}
             />
           </div>
         ))}
@@ -260,12 +286,12 @@ function ConfigTab({
     <div className={styles.configMain}>
       <section className={styles.configSection}>
         <h2 className={styles.configTitle}>Rodada</h2>
-        <input
-          className={styles.configInput}
-          value={gameState.round ?? ""}
-          maxLength={40}
-          placeholder="Ex: Rodada 3 / Phase 2"
-          onChange={(e) => updateRound(e.target.value)}
+        <NumberPicker
+          value={Number(String(gameState.round ?? "1").match(/\d+/)?.[0] || 1)}
+          min={1}
+          max={99}
+          ariaLabel="Rodada"
+          onChange={(next) => updateRound(String(next))}
         />
       </section>
 
@@ -296,7 +322,7 @@ function ConfigTab({
             </button>
           )}
           <button className={`${styles.timerBtn} ${styles.timerBtnGhost}`} onClick={resetTimer}>
-            Reset
+            Resetar
           </button>
         </div>
       </section>

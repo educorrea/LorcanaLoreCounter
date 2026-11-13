@@ -22,12 +22,10 @@
   transform: translateX(-50%);
   display: flex;
   align-items: stretch;
-  background: rgba(10, 8, 24, 0.88);
+  background: #0c1428;
   border: 1px solid rgba(167, 139, 250, 0.35);
   border-radius: 10px;
   overflow: hidden;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   min-width: min(380px, 70vw);
 }
 
@@ -84,12 +82,10 @@
   display: flex;
   align-items: center;
   gap: 0;
-  background: rgba(10, 8, 24, 0.82);
+  background: #0c1428;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   overflow: hidden;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
 }
 
 /* ── Player Block ── */

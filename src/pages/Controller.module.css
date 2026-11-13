@@ -208,21 +208,21 @@
 
 .recordInputs {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
+  grid-template-columns: 1fr;
+  gap: 10px;
 }
 
 .recordField {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .recordLabel {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.35);
-  text-align: center;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: left;
 }
 
 .recordInput {
@@ -242,6 +242,44 @@
 .recordInput::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.numberPicker {
+  display: grid;
+  grid-template-columns: 56px 1fr 56px;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 6px;
+}
+
+.pickerBtn {
+  height: 48px;
+  border-radius: 10px;
+  background: rgba(124, 58, 237, 0.2);
+  border: 1px solid rgba(167, 139, 250, 0.35);
+  color: #c4b5fd;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.pickerBtn:disabled {
+  opacity: 0.25;
+}
+
+.pickerBtn:active:not(:disabled) {
+  background: rgba(124, 58, 237, 0.35);
+}
+
+.pickerValue {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
 }
 
 .colorGrid {

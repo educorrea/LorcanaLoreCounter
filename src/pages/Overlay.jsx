@@ -41,12 +41,12 @@ function RoundClock({ round, timer }) {
   return (
     <div className={styles.roundBar}>
       <div className={styles.roundBlock}>
-        <span className={styles.roundLabel}>ROUND</span>
+        <span className={styles.roundLabel}>RODADA</span>
         <span className={styles.roundValue}>{round}</span>
       </div>
       <div className={styles.roundDivider} />
       <div className={styles.roundBlock}>
-        <span className={styles.roundLabel}>TIME</span>
+        <span className={styles.roundLabel}>TEMPO</span>
         <span className={`${styles.timeValue} ${expired ? styles.timeExpired : ""}`}>{label}</span>
       </div>
     </div>

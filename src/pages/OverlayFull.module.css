@@ -20,12 +20,10 @@
   display: flex;
   align-items: stretch;
   gap: 0;
-  background: rgba(8, 6, 20, 0.88);
+  background: #0c1428;
   border: 1px solid rgba(167, 139, 250, 0.35);
   border-radius: 10px;
   overflow: hidden;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   min-width: min(420px, 46vw);
   z-index: 5;
 }
@@ -86,20 +84,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(8, 6, 20, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0c1428;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 1vh 6px 1.6vh;
   width: clamp(72px, 9vw, 140px);
   height: 88vh;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   transition: border-color 0.4s ease;
 }
 
 .panel.won {
   border-color: rgba(167, 139, 250, 0.6);
-  background: rgba(30, 10, 60, 0.88);
+  background: #1a1038;
 }
 
 /* ── Labels ── */

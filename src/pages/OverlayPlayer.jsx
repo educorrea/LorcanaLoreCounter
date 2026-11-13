@@ -69,7 +69,7 @@ export default function OverlayPlayer() {
           })}
         </div>
 
-        <div className={styles.bottomLabel}>START</div>
+        <div className={styles.bottomLabel}>INÍCIO</div>
 
         <div className={styles.playerName}>{data.name}</div>
       </div>

@@ -28,7 +28,7 @@ const defaultState = {
     type: "BO3",
     games: [], // array of "p1" | "p2" — winner of each completed game
   },
-  round: "Rodada 1",
+  round: "1",
   timer: {
     durationSeconds: DEFAULT_TIMER_SECONDS,
     remainingSeconds: DEFAULT_TIMER_SECONDS,
@@ -76,9 +76,21 @@ function normalizeState(data) {
       type: data?.series?.type && WINS_NEEDED[data.series.type] ? data.series.type : "BO3",
       games: Array.isArray(data?.series?.games) ? data.series.games : [],
     },
-    round: typeof data?.round === "string" && data.round.trim() ? data.round.trim() : "Rodada 1",
+    round: normalizeRound(data?.round),
     timer: normalizeTimer(data?.timer),
   };
+}
+
+function normalizeRound(round) {
+  if (typeof round === "number" && Number.isFinite(round)) {
+    return String(Math.max(1, Math.min(99, Math.round(round))));
+  }
+  if (typeof round === "string" && round.trim()) {
+    const match = round.trim().match(/\d+/);
+    if (match) return String(Math.max(1, Math.min(99, Number(match[0]) || 1)));
+    return round.trim();
+  }
+  return "1";
 }
 
 export function useGameState(matchId = "default") {
@@ -137,7 +149,7 @@ export function useGameState(matchId = "default") {
   }, [matchId]);
 
   const updateRound = useCallback(async (round) => {
-    await set(ref(db, `matches/${matchId}/round`), round.trim() || "Rodada 1");
+    await set(ref(db, `matches/${matchId}/round`), normalizeRound(round));
   }, [matchId]);
 
   const setTimerDuration = useCallback(async (minutes) => {
