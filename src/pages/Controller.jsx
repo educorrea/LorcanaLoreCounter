@@ -241,12 +241,12 @@ function ConfigPlayerCard({
       <label className={styles.fieldLabel}>Campeonato (V–D–E)</label>
       <div className={styles.recordInputs}>
         {[
-          ["wins", "Vitórias"],
-          ["losses", "Derrotas"],
-          ["draws", "Empates"],
-        ].map(([field, label]) => (
+          ["wins", "V", "Vitórias"],
+          ["losses", "D", "Derrotas"],
+          ["draws", "E", "Empates"],
+        ].map(([field, short, label]) => (
           <div key={field} className={styles.recordField}>
-            <span className={styles.recordLabel}>{label}</span>
+            <span className={styles.recordLabel} title={label}>{short}</span>
             <NumberPicker
               value={player.record?.[field] ?? 0}
               min={0}
