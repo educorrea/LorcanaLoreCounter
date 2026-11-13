@@ -1,6 +1,8 @@
 {
   "routes": [
     { "handle": "filesystem" },
+    { "src": "/contador(?:/.*)?", "dest": "/contador/index.html" },
+    { "src": "/config(?:/.*)?", "dest": "/config/index.html" },
     { "src": "/.*", "dest": "/index.html" }
   ]
 }
