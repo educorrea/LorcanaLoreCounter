@@ -1,0 +1,26 @@
+{
+  "id": "/config",
+  "name": "Lorcana Config",
+  "short_name": "Config",
+  "description": "Configuração da partida — nomes, rodada, timer, BO e overlay",
+  "start_url": "/config?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0c1428",
+  "background_color": "#0c1428",
+  "icons": [
+    {
+      "src": "/icon-config-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-config-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
