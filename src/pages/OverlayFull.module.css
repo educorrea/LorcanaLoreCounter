@@ -11,185 +11,223 @@
   padding: 0 12px;
 }
 
+/* ── Round / Time (topo centro) ── */
+.roundBar {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  background: #0c1428;
+  border: 1px solid rgba(167, 139, 250, 0.35);
+  border-radius: 10px;
+  overflow: hidden;
+  min-width: min(420px, 46vw);
+  z-index: 5;
+}
+
+.roundBlock {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px 10px;
+  gap: 2px;
+}
+
+.roundDivider {
+  width: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  align-self: stretch;
+}
+
+.roundLabel {
+  font-size: clamp(8px, 1.1vh, 11px);
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.roundValue {
+  font-size: clamp(13px, 2vh, 20px);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.5px;
+  text-align: center;
+  max-width: 22vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.timeValue {
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(16px, 2.4vh, 26px);
+  font-weight: 900;
+  color: #c4b5fd;
+  letter-spacing: 1px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.timeExpired {
+  color: #f87171;
+}
+
 /* ── Painel ── */
 .panel {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #08060e;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #0c1428;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  padding: 1.5vh 8px 1.2vh;
-  width: clamp(50px, 7vw, 110px);
+  padding: 1vh 6px 1.6vh;
+  width: clamp(72px, 9vw, 140px);
   height: 88vh;
   transition: border-color 0.4s ease;
 }
 
 .panel.won {
   border-color: rgba(167, 139, 250, 0.6);
-  background: #1a0a3c;
+  background: #1a1038;
 }
 
 /* ── Labels ── */
 .topLabel {
-  font-size: clamp(6px, 1vh, 14px);
+  font-size: clamp(8px, 1.2vh, 13px);
   font-weight: 800;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.35);
-  margin-bottom: 0.6vh;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 0.4vh;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   flex-shrink: 0;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7vh;
+  margin-top: 0.8vh;
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: 18vh;
+  justify-content: flex-end;
 }
 
 .bottomLabel {
-  font-size: clamp(6px, 1vh, 14px);
+  font-size: clamp(9px, 1.3vh, 14px);
   font-weight: 800;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.2);
-  margin-top: 0.6vh;
+  color: rgba(255, 255, 255, 0.32);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  flex-shrink: 0;
 }
 
 .name {
-  font-size: clamp(6px, 1vh, 14px);
-  font-weight: 700;
-  letter-spacing: 1px;
+  font-size: clamp(13px, 2vh, 20px);
+  font-weight: 800;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
-  margin-top: 0.8vh;
+  color: rgba(255, 255, 255, 0.92);
   max-width: 100%;
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  flex-shrink: 0;
 }
 
-/* ── Track ── */
+.playerMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55vh;
+}
+
+.record {
+  font-size: clamp(12px, 1.7vh, 18px);
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  color: rgba(255, 255, 255, 0.78);
+  font-variant-numeric: tabular-nums;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ── Track: só números centralizados, mais compacto ── */
 .track {
   display: flex;
   flex-direction: column;
   width: 100%;
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 58vh;
+  justify-content: space-evenly;
+  gap: 0;
 }
 
 .step {
   display: flex;
   align-items: center;
-  gap: 4px;
-  flex: 1;
-  height: auto;
+  justify-content: center;
+  flex: 0 0 auto;
+  height: clamp(12px, 2.35vh, 22px);
+  line-height: 1;
 }
 
 .num {
-  font-size: clamp(8px, 1.4vh, 18px);
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.18);
-  width: clamp(14px, 2vh, 24px);
-  text-align: right;
-  flex-shrink: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  transition: color 0.2s, font-size 0.2s;
-}
-
-.filled .num  { color: rgba(255, 255, 255, 0.5); }
-.active .num  { color: #fff; font-weight: 800; font-size: clamp(10px, 2vh, 24px); }
-.win .num     { color: #a78bfa; }
-
-.bar {
-  flex: 1;
-  height: 100%;
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.bar::before {
-  content: "";
-  position: absolute;
-  left: 0; right: 0;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 1px;
-}
-
-.filled .bar::before         { background: rgba(124, 58, 237, 0.4); }
-.active .bar::before         { background: #7c3aed; height: 3px; }
-.win.filled .bar::before     { background: rgba(167, 139, 250, 0.65); }
-
-/* ── Marcador ── */
-.marker {
-  position: absolute;
-  left: -3px;
-  width: clamp(8px, 1.8vh, 20px);
-  height: clamp(8px, 1.8vh, 20px);
-  border-radius: 50%;
-  background: #a78bfa;
-  box-shadow: 0 0 10px #a78bfa, 0 0 20px rgba(167, 139, 250, 0.5);
-  z-index: 2;
-  animation: glow 2s ease-in-out infinite;
-}
-
-@keyframes glow {
-  0%, 100% { box-shadow: 0 0 8px #a78bfa, 0 0 16px rgba(167, 139, 250, 0.4); }
-  50%       { box-shadow: 0 0 14px #a78bfa, 0 0 28px rgba(167, 139, 250, 0.7); }
-}
-
-/* ── Record (V/D/E) ── */
-.record {
-  font-size: clamp(6px, 0.9vh, 12px);
+  font-size: clamp(11px, 1.65vh, 18px);
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.4);
-  margin-top: 0.4vh;
-  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.16);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  flex-shrink: 0;
+  transition: color 0.2s ease, text-shadow 0.2s ease, transform 0.2s ease, font-weight 0.2s ease;
 }
 
-/* ── Rodada (center) ── */
-.centerInfo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.3vh;
-  flex-shrink: 0;
-  padding: 0 clamp(6px, 1vw, 16px);
+/* Acende conforme o lore sobe */
+.filled .num {
+  color: rgba(196, 181, 253, 0.72);
 }
 
-.rodadaLabel {
-  font-size: clamp(6px, 0.9vh, 12px);
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.3);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
-.rodadaNum {
-  font-size: clamp(18px, 3.5vh, 48px);
-  font-weight: 900;
+.active .num {
   color: #fff;
-  line-height: 1;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 900;
+  font-size: clamp(12px, 1.9vh, 21px);
+  text-shadow: 0 0 10px rgba(167, 139, 250, 0.85), 0 0 18px rgba(167, 139, 250, 0.45);
+  transform: scale(1.08);
+}
+
+.win .num {
+  color: rgba(167, 139, 250, 0.35);
+}
+
+.win.filled .num {
+  color: #c4b5fd;
+}
+
+.win.active .num {
+  color: #e9d5ff;
+  text-shadow: 0 0 12px rgba(167, 139, 250, 0.95), 0 0 22px rgba(167, 139, 250, 0.55);
 }
 
 /* ── Series Diamonds ── */
 .seriesDiamonds {
   display: flex;
-  gap: clamp(3px, 0.6vh, 8px);
+  gap: clamp(4px, 0.7vh, 10px);
   justify-content: center;
-  margin-top: 0.5vh;
-  flex-shrink: 0;
 }
 
 .diamond polygon {
   fill: transparent;
-  stroke: rgba(255, 255, 255, 0.25);
+  stroke: rgba(255, 255, 255, 0.3);
 }
 
 .diamondFilled polygon {

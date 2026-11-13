@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import { ref, onValue, set, get } from "firebase/database";
+import { ref, onValue, set, get, update } from "firebase/database";
 import { db } from "../firebase";
+import { normalizeColors } from "../constants/lorcana";
 
 export const MAX_LORE = 20;
 
@@ -9,18 +10,87 @@ export const WINS_NEEDED = { BO1: 1, BO3: 2, BO5: 3 };
 // Total game slots to display as diamonds
 export const TOTAL_GAMES = { BO1: 1, BO3: 3, BO5: 5 };
 
+const DEFAULT_TIMER_SECONDS = 50 * 60; // 50 min common for Swiss rounds
+
+function defaultPlayer(name, colors) {
+  return {
+    name,
+    lore: 0,
+    record: { wins: 0, losses: 0, draws: 0 },
+    colors,
+  };
+}
+
 const defaultState = {
-  player1: { name: "Jogador 1", lore: 0, vitorias: 0, derrotas: 0, empates: 0 },
-  player2: { name: "Jogador 2", lore: 0, vitorias: 0, derrotas: 0, empates: 0 },
-  rodada: 1,
+  player1: defaultPlayer("Jogador 1", ["amber", "amethyst"]),
+  player2: defaultPlayer("Jogador 2", ["ruby", "sapphire"]),
   series: {
     type: "BO3",
-    games: [],
+    games: [], // array of "p1" | "p2" — winner of each completed game
+  },
+  round: "1",
+  timer: {
+    durationSeconds: DEFAULT_TIMER_SECONDS,
+    remainingSeconds: DEFAULT_TIMER_SECONDS,
+    running: false,
+    endsAt: null,
   },
 };
 
 function clamp(value) {
   return Math.max(0, Math.min(MAX_LORE, value));
+}
+
+function normalizePlayer(player, fallbackName, fallbackColors) {
+  return {
+    name: player?.name || fallbackName,
+    lore: typeof player?.lore === "number" ? player.lore : 0,
+    record: {
+      wins: Number(player?.record?.wins) || 0,
+      losses: Number(player?.record?.losses) || 0,
+      draws: Number(player?.record?.draws) || 0,
+    },
+    colors: normalizeColors(player?.colors ?? fallbackColors),
+  };
+}
+
+function normalizeTimer(timer) {
+  const durationSeconds = Math.max(60, Number(timer?.durationSeconds) || DEFAULT_TIMER_SECONDS);
+  const remainingSeconds = Math.max(
+    0,
+    Number(timer?.remainingSeconds) || durationSeconds
+  );
+  return {
+    durationSeconds,
+    remainingSeconds,
+    running: Boolean(timer?.running),
+    endsAt: timer?.endsAt ?? null,
+  };
+}
+
+function normalizeState(data) {
+  return {
+    player1: normalizePlayer(data?.player1, "Jogador 1", ["amber", "amethyst"]),
+    player2: normalizePlayer(data?.player2, "Jogador 2", ["ruby", "sapphire"]),
+    series: {
+      type: data?.series?.type && WINS_NEEDED[data.series.type] ? data.series.type : "BO3",
+      games: Array.isArray(data?.series?.games) ? data.series.games : [],
+    },
+    round: normalizeRound(data?.round),
+    timer: normalizeTimer(data?.timer),
+  };
+}
+
+function normalizeRound(round) {
+  if (typeof round === "number" && Number.isFinite(round)) {
+    return String(Math.max(1, Math.min(99, Math.round(round))));
+  }
+  if (typeof round === "string" && round.trim()) {
+    const match = round.trim().match(/\d+/);
+    if (match) return String(Math.max(1, Math.min(99, Number(match[0]) || 1)));
+    return round.trim();
+  }
+  return "1";
 }
 
 export function useGameState(matchId = "default") {
@@ -40,13 +110,7 @@ export function useGameState(matchId = "default") {
       setLoading(false);
       const data = snap.val();
       if (data) {
-        // Ensure fields exist for older saves
-        if (!data.series) data.series = defaultState.series;
-        if (!data.series.games) data.series.games = [];
-        if (!data.rodada) data.rodada = 1;
-        if (!data.player1.vitorias) data.player1 = { ...defaultState.player1, ...data.player1 };
-        if (!data.player2.vitorias) data.player2 = { ...defaultState.player2, ...data.player2 };
-        setGameState(data);
+        setGameState(normalizeState(data));
       } else {
         set(matchRef, defaultState);
         setGameState(defaultState);
@@ -71,6 +135,68 @@ export function useGameState(matchId = "default") {
     const key = player === 1 ? "player1" : "player2";
     const nameRef = ref(db, `matches/${matchId}/${key}/name`);
     await set(nameRef, name.trim() || (player === 1 ? "Jogador 1" : "Jogador 2"));
+  }, [matchId]);
+
+  const updateRecord = useCallback(async (player, field, value) => {
+    const key = player === 1 ? "player1" : "player2";
+    const n = Math.max(0, Math.min(99, Number(value) || 0));
+    await set(ref(db, `matches/${matchId}/${key}/record/${field}`), n);
+  }, [matchId]);
+
+  const updateColors = useCallback(async (player, colors) => {
+    const key = player === 1 ? "player1" : "player2";
+    await set(ref(db, `matches/${matchId}/${key}/colors`), normalizeColors(colors));
+  }, [matchId]);
+
+  const updateRound = useCallback(async (round) => {
+    await set(ref(db, `matches/${matchId}/round`), normalizeRound(round));
+  }, [matchId]);
+
+  const setTimerDuration = useCallback(async (minutes) => {
+    const durationSeconds = Math.max(1, Math.round(Number(minutes) || 50)) * 60;
+    await update(ref(db, `matches/${matchId}/timer`), {
+      durationSeconds,
+      remainingSeconds: durationSeconds,
+      running: false,
+      endsAt: null,
+    });
+  }, [matchId]);
+
+  const startTimer = useCallback(async () => {
+    const snap = await get(ref(db, `matches/${matchId}/timer`));
+    const timer = normalizeTimer(snap.val());
+    const remaining = timer.running && timer.endsAt
+      ? Math.max(0, Math.ceil((timer.endsAt - Date.now()) / 1000))
+      : timer.remainingSeconds;
+    if (remaining <= 0) return;
+    await update(ref(db, `matches/${matchId}/timer`), {
+      remainingSeconds: remaining,
+      running: true,
+      endsAt: Date.now() + remaining * 1000,
+    });
+  }, [matchId]);
+
+  const pauseTimer = useCallback(async () => {
+    const snap = await get(ref(db, `matches/${matchId}/timer`));
+    const timer = normalizeTimer(snap.val());
+    const remaining = timer.running && timer.endsAt
+      ? Math.max(0, Math.ceil((timer.endsAt - Date.now()) / 1000))
+      : timer.remainingSeconds;
+    await update(ref(db, `matches/${matchId}/timer`), {
+      remainingSeconds: remaining,
+      running: false,
+      endsAt: null,
+    });
+  }, [matchId]);
+
+  const resetTimer = useCallback(async () => {
+    const snap = await get(ref(db, `matches/${matchId}/timer`));
+    const timer = normalizeTimer(snap.val());
+    await update(ref(db, `matches/${matchId}/timer`), {
+      remainingSeconds: timer.durationSeconds,
+      running: false,
+      endsAt: null,
+    });
   }, [matchId]);
 
   const setSeriesType = useCallback(async (type) => {
@@ -103,33 +229,21 @@ export function useGameState(matchId = "default") {
     }
   }, [matchId]);
 
-  const setRodada = useCallback(async (delta) => {
-    const snap = await get(ref(db, `matches/${matchId}/rodada`));
-    const current = snap.val() ?? 1;
-    const next = Math.max(1, current + delta);
-    await set(ref(db, `matches/${matchId}/rodada`), next);
-  }, [matchId]);
-
-  const updateRecord = useCallback(async (player, field, delta) => {
-    const key = player === 1 ? "player1" : "player2";
-    const fieldRef = ref(db, `matches/${matchId}/${key}/${field}`);
-    const snap = await get(fieldRef);
-    const current = snap.val() ?? 0;
-    await set(fieldRef, Math.max(0, current + delta));
-  }, [matchId]);
-
   const resetMatch = useCallback(async () => {
     const snap = await get(matchRef);
     const data = snap.val();
-    const names = {
-      player1: data?.player1?.name ?? "Jogador 1",
-      player2: data?.player2?.name ?? "Jogador 2",
-    };
-    const type = data?.series?.type ?? "BO3";
+    const normalized = normalizeState(data ?? {});
     await set(matchRef, {
-      player1: { name: names.player1, lore: 0 },
-      player2: { name: names.player2, lore: 0 },
-      series: { type, games: [] },
+      player1: { ...normalized.player1, lore: 0 },
+      player2: { ...normalized.player2, lore: 0 },
+      series: { type: normalized.series.type, games: [] },
+      round: normalized.round,
+      timer: {
+        durationSeconds: normalized.timer.durationSeconds,
+        remainingSeconds: normalized.timer.durationSeconds,
+        running: false,
+        endsAt: null,
+      },
     });
   }, [matchId]);
 
@@ -139,10 +253,15 @@ export function useGameState(matchId = "default") {
     loading,
     updateLore,
     updateName,
+    updateRecord,
+    updateColors,
+    updateRound,
+    setTimerDuration,
+    startTimer,
+    pauseTimer,
+    resetTimer,
     setSeriesType,
     recordWin,
-    setRodada,
-    updateRecord,
     resetMatch,
     MAX_LORE,
     WINS_NEEDED,

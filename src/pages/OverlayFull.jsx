@@ -1,5 +1,8 @@
 import { useEffect } from "react";
 import { useGameState } from "../hooks/useGameState";
+import { useSyncedTimer } from "../hooks/useSyncedTimer";
+import { formatRecord } from "../constants/lorcana";
+import InkDots from "../components/InkDots";
 import styles from "./OverlayFull.module.css";
 
 const MAX_LORE = 20;
@@ -7,13 +10,13 @@ const STEPS = Array.from({ length: MAX_LORE + 1 }, (_, i) => MAX_LORE - i);
 
 function Diamond({ filled }) {
   return (
-    <svg width="14" height="14" viewBox="0 0 20 20" className={`${styles.diamond} ${filled ? styles.diamondFilled : ""}`}>
+    <svg width="20" height="20" viewBox="0 0 20 20" className={`${styles.diamond} ${filled ? styles.diamondFilled : ""}`}>
       <polygon points="10,1 19,10 10,19 1,10" strokeWidth="1.5" />
     </svg>
   );
 }
 
-function SeriesDiamonds({ playerKey, series, WINS_NEEDED, TOTAL_GAMES }) {
+function SeriesDiamonds({ playerKey, series, WINS_NEEDED }) {
   const type = series?.type ?? "BO3";
   const games = series?.games ?? [];
   const total = WINS_NEEDED[type] ?? 2;
@@ -46,9 +49,6 @@ function LoreTrack({ lore }) {
             ].join(" ")}
           >
             <span className={styles.num}>{step}</span>
-            <div className={styles.bar}>
-              {isActive && <div className={styles.marker} />}
-            </div>
           </div>
         );
       })}
@@ -56,31 +56,49 @@ function LoreTrack({ lore }) {
   );
 }
 
-function PlayerPanel({ player, playerKey, side, series, WINS_NEEDED, TOTAL_GAMES }) {
+function PlayerPanel({ player, playerKey, side, series, WINS_NEEDED }) {
   const won = player.lore >= MAX_LORE;
-  const v = player.vitorias ?? 0;
-  const d = player.derrotas ?? 0;
-  const e = player.empates ?? 0;
-
   return (
     <div className={`${styles.panel} ${styles[side]} ${won ? styles.won : ""}`}>
       <div className={styles.topLabel}>VITÓRIA</div>
       <LoreTrack lore={player.lore} />
-      <div className={styles.bottomLabel}>INÍCIO</div>
-      <SeriesDiamonds
-        playerKey={playerKey}
-        series={series}
-        WINS_NEEDED={WINS_NEEDED}
-        TOTAL_GAMES={TOTAL_GAMES}
-      />
-      <div className={styles.name}>{player.name}</div>
-      <div className={styles.record}>{v}V {d}D {e}E</div>
+      <div className={styles.footer}>
+        <div className={styles.bottomLabel}>INÍCIO</div>
+        <SeriesDiamonds
+          playerKey={playerKey}
+          series={series}
+          WINS_NEEDED={WINS_NEEDED}
+        />
+        <div className={styles.name}>{player.name}</div>
+        <div className={styles.playerMeta}>
+          <InkDots colors={player.colors} size={32} />
+          <span className={styles.record}>{formatRecord(player.record)}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RoundClock({ round, timer }) {
+  const { label, expired } = useSyncedTimer(timer);
+
+  return (
+    <div className={styles.roundBar}>
+      <div className={styles.roundBlock}>
+        <span className={styles.roundLabel}>RODADA</span>
+        <span className={styles.roundValue}>{round}</span>
+      </div>
+      <div className={styles.roundDivider} />
+      <div className={styles.roundBlock}>
+        <span className={styles.roundLabel}>TEMPO</span>
+        <span className={`${styles.timeValue} ${expired ? styles.timeExpired : ""}`}>{label}</span>
+      </div>
     </div>
   );
 }
 
 export default function OverlayFull() {
-  const { gameState, loading, WINS_NEEDED, TOTAL_GAMES } = useGameState("partida1");
+  const { gameState, loading, WINS_NEEDED } = useGameState("partida1");
 
   useEffect(() => {
     document.body.style.background = "transparent";
@@ -95,25 +113,20 @@ export default function OverlayFull() {
 
   return (
     <div className={styles.root}>
+      <RoundClock round={gameState.round} timer={gameState.timer} />
       <PlayerPanel
         player={gameState.player1}
         playerKey="p1"
         side="left"
         series={gameState.series}
         WINS_NEEDED={WINS_NEEDED}
-        TOTAL_GAMES={TOTAL_GAMES}
       />
-      <div className={styles.centerInfo}>
-        <div className={styles.rodadaLabel}>RODADA</div>
-        <div className={styles.rodadaNum}>{gameState.rodada ?? 1}</div>
-      </div>
       <PlayerPanel
         player={gameState.player2}
         playerKey="p2"
         side="right"
         series={gameState.series}
         WINS_NEEDED={WINS_NEEDED}
-        TOTAL_GAMES={TOTAL_GAMES}
       />
     </div>
   );

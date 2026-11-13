@@ -1,21 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGameState } from "../hooks/useGameState";
+import { useSyncedTimer } from "../hooks/useSyncedTimer";
+import { LORCANA_INKS, formatRecord } from "../constants/lorcana";
+import InkDots from "../components/InkDots";
 import styles from "./Controller.module.css";
 
-function NumberPicker({ label, value, onDecrement, onIncrement, min = 0 }) {
-  return (
-    <div className={styles.picker}>
-      <span className={styles.pickerLabel}>{label}</span>
-      <div className={styles.pickerControls}>
-        <button className={styles.pickerBtn} onClick={onDecrement} disabled={value <= min}>−</button>
-        <span className={styles.pickerValue}>{value}</span>
-        <button className={styles.pickerBtn} onClick={onIncrement}>+</button>
-      </div>
-    </div>
-  );
-}
-
-// Diamond SVG — filled or empty
 function Diamond({ filled, dim }) {
   return (
     <svg
@@ -24,15 +13,12 @@ function Diamond({ filled, dim }) {
       viewBox="0 0 20 20"
       className={`${styles.diamond} ${filled ? styles.diamondFilled : ""}`}
     >
-      <polygon
-        points="10,1 19,10 10,19 1,10"
-        strokeWidth="1.5"
-      />
+      <polygon points="10,1 19,10 10,19 1,10" strokeWidth="1.5" />
     </svg>
   );
 }
 
-function SeriesRow({ series, WINS_NEEDED, TOTAL_GAMES }) {
+function SeriesRow({ series, WINS_NEEDED }) {
   const type = series?.type ?? "BO3";
   const games = series?.games ?? [];
   const total = WINS_NEEDED[type] ?? 2;
@@ -47,13 +33,11 @@ function SeriesRow({ series, WINS_NEEDED, TOTAL_GAMES }) {
       <div className={styles.seriesDiamonds}>
         {Array.from({ length: total }).map((_, i) => {
           const winner = games[i];
-          const isP1 = winner === "p1";
-          const isP2 = winner === "p2";
           return (
             <div key={i} className={styles.seriesGame}>
-              <Diamond filled={isP1} dim={16} />
+              <Diamond filled={winner === "p1"} dim={16} />
               <span className={styles.seriesGameNum}>{i + 1}</span>
-              <Diamond filled={isP2} dim={16} />
+              <Diamond filled={winner === "p2"} dim={16} />
             </div>
           );
         })}
@@ -70,15 +54,7 @@ function SeriesRow({ series, WINS_NEEDED, TOTAL_GAMES }) {
   );
 }
 
-function PlayerPanel({ player, playerNum, onLoreChange, onNameChange, onWin, onRecord, series, WINS_NEEDED, TOTAL_GAMES, maxLore }) {
-  const [editingName, setEditingName] = useState(false);
-  const [tempName, setTempName] = useState(player.name);
-
-  const handleNameBlur = () => {
-    setEditingName(false);
-    if (tempName !== player.name) onNameChange(playerNum, tempName);
-  };
-
+function PlayerPanel({ player, playerNum, onLoreChange, onWin, series, WINS_NEEDED, maxLore }) {
   const type = series?.type ?? "BO3";
   const games = series?.games ?? [];
   const winsNeeded = WINS_NEEDED[type] ?? 2;
@@ -94,27 +70,14 @@ function PlayerPanel({ player, playerNum, onLoreChange, onNameChange, onWin, onR
   return (
     <div className={`${styles.playerCard} ${won ? styles.won : ""}`}>
       <div className={styles.playerHeader}>
-        {editingName ? (
-          <input
-            className={styles.nameInput}
-            value={tempName}
-            onChange={(e) => setTempName(e.target.value)}
-            onBlur={handleNameBlur}
-            onKeyDown={(e) => e.key === "Enter" && e.target.blur()}
-            autoFocus
-            maxLength={20}
-          />
-        ) : (
-          <button
-            className={styles.nameButton}
-            onClick={() => { setTempName(player.name); setEditingName(true); }}
-          >
-            {player.name}
-            <span className={styles.editHint}>editar</span>
-          </button>
-        )}
+        <div className={styles.playerIdentity}>
+          <span className={styles.nameDisplay}>{player.name}</span>
+          <div className={styles.metaRow}>
+            <InkDots colors={player.colors} size={18} />
+            <span className={styles.recordText}>{formatRecord(player.record)}</span>
+          </div>
+        </div>
 
-        {/* Diamonds showing this player's wins */}
         <div className={styles.playerDiamonds}>
           {Array.from({ length: total }).map((_, i) => (
             <Diamond key={i} filled={i < myWins} dim={14} />
@@ -162,7 +125,6 @@ function PlayerPanel({ player, playerNum, onLoreChange, onNameChange, onWin, onR
         </button>
       </div>
 
-      {/* Win button — records victory for this player */}
       {!seriesOver && (
         <button
           className={`${styles.winBtn} ${won ? styles.winBtnHighlight : ""}`}
@@ -171,26 +133,237 @@ function PlayerPanel({ player, playerNum, onLoreChange, onNameChange, onWin, onR
           {player.name} venceu o jogo {games.length + 1}
         </button>
       )}
+    </div>
+  );
+}
 
-      {/* V/D/E record pickers */}
-      <div className={styles.recordRow}>
-        <NumberPicker label="V" value={player.vitorias ?? 0} onDecrement={() => onRecord(playerNum, "vitorias", -1)} onIncrement={() => onRecord(playerNum, "vitorias", 1)} />
-        <NumberPicker label="D" value={player.derrotas ?? 0} onDecrement={() => onRecord(playerNum, "derrotas", -1)} onIncrement={() => onRecord(playerNum, "derrotas", 1)} />
-        <NumberPicker label="E" value={player.empates ?? 0} onDecrement={() => onRecord(playerNum, "empates", -1)} onIncrement={() => onRecord(playerNum, "empates", 1)} />
+function NumberPicker({ value, min = 0, max = 99, onChange, ariaLabel }) {
+  const n = Number(value) || 0;
+  return (
+    <div className={styles.numberPicker}>
+      <button
+        type="button"
+        className={styles.pickerBtn}
+        onClick={() => onChange(Math.max(min, n - 1))}
+        disabled={n <= min}
+        aria-label={`Diminuir ${ariaLabel || ""}`}
+      >
+        −
+      </button>
+      <span className={styles.pickerValue}>{n}</span>
+      <button
+        type="button"
+        className={styles.pickerBtn}
+        onClick={() => onChange(Math.min(max, n + 1))}
+        disabled={n >= max}
+        aria-label={`Aumentar ${ariaLabel || ""}`}
+      >
+        +
+      </button>
+    </div>
+  );
+}
+
+function ColorPicker({ colors, onChange }) {
+  const selected = colors ?? [];
+
+  const toggle = (id) => {
+    if (selected.includes(id)) {
+      if (selected.length <= 1) return;
+      onChange(selected.filter((c) => c !== id));
+      return;
+    }
+    if (selected.length < 2) {
+      onChange([...selected, id]);
+      return;
+    }
+    // Replace oldest selection when already at 2
+    onChange([selected[1], id]);
+  };
+
+  return (
+    <div className={styles.colorGrid}>
+      {LORCANA_INKS.map((ink) => {
+        const active = selected.includes(ink.id);
+        const order = selected.indexOf(ink.id);
+        return (
+          <button
+            key={ink.id}
+            type="button"
+            className={`${styles.colorBtn} ${active ? styles.colorBtnActive : ""}`}
+            onClick={() => toggle(ink.id)}
+            title={ink.label}
+          >
+            <span className={styles.colorSwatch} style={{ background: ink.hex }} />
+            <span className={styles.colorLabel}>{ink.label}</span>
+            {active && <span className={styles.colorOrder}>{order + 1}</span>}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function ConfigPlayerCard({
+  player,
+  playerNum,
+  onNameChange,
+  onRecordChange,
+  onColorsChange,
+}) {
+  const [tempName, setTempName] = useState(player.name);
+  const [editing, setEditing] = useState(false);
+
+  useEffect(() => {
+    if (!editing) setTempName(player.name);
+  }, [player.name, editing]);
+
+  return (
+    <div className={styles.configCard}>
+      <label className={styles.fieldLabel}>Nome</label>
+      <input
+        className={styles.configInput}
+        value={tempName}
+        maxLength={24}
+        onFocus={() => {
+          setEditing(true);
+          setTempName(player.name);
+        }}
+        onChange={(e) => setTempName(e.target.value)}
+        onBlur={() => {
+          setEditing(false);
+          if (tempName !== player.name) onNameChange(playerNum, tempName);
+          else setTempName(player.name);
+        }}
+        onKeyDown={(e) => e.key === "Enter" && e.target.blur()}
+      />
+
+      <label className={styles.fieldLabel}>Campeonato (V–D–E)</label>
+      <div className={styles.recordInputs}>
+        {[
+          ["wins", "V", "Vitórias"],
+          ["losses", "D", "Derrotas"],
+          ["draws", "E", "Empates"],
+        ].map(([field, short, label]) => (
+          <div key={field} className={styles.recordField}>
+            <span className={styles.recordLabel} title={label}>{short}</span>
+            <NumberPicker
+              value={player.record?.[field] ?? 0}
+              min={0}
+              max={99}
+              ariaLabel={label}
+              onChange={(next) => onRecordChange(playerNum, field, next)}
+            />
+          </div>
+        ))}
       </div>
+
+      <label className={styles.fieldLabel}>Cores do deck (2)</label>
+      <ColorPicker
+        colors={player.colors}
+        onChange={(next) => onColorsChange(playerNum, next)}
+      />
+    </div>
+  );
+}
+
+function ConfigTab({
+  gameState,
+  updateName,
+  updateRecord,
+  updateColors,
+  updateRound,
+  setTimerDuration,
+  startTimer,
+  pauseTimer,
+  resetTimer,
+}) {
+  const { label, expired } = useSyncedTimer(gameState.timer);
+  const durationMinutes = Math.round((gameState.timer?.durationSeconds ?? 3000) / 60);
+  const running = Boolean(gameState.timer?.running);
+
+  return (
+    <div className={styles.configMain}>
+      <section className={styles.configSection}>
+        <h2 className={styles.configTitle}>Rodada</h2>
+        <NumberPicker
+          value={Number(String(gameState.round ?? "1").match(/\d+/)?.[0] || 1)}
+          min={1}
+          max={99}
+          ariaLabel="Rodada"
+          onChange={(next) => updateRound(String(next))}
+        />
+      </section>
+
+      <section className={styles.configSection}>
+        <h2 className={styles.configTitle}>Tempo da rodada</h2>
+        <div className={`${styles.timerDisplay} ${expired ? styles.timerExpired : ""}`}>
+          {label}
+        </div>
+        <div className={styles.timerControls}>
+          <label className={styles.durationField}>
+            <span>Minutos</span>
+            <input
+              className={styles.recordInput}
+              type="number"
+              min={1}
+              max={180}
+              value={durationMinutes}
+              onChange={(e) => setTimerDuration(e.target.value)}
+            />
+          </label>
+          {!running ? (
+            <button className={styles.timerBtn} onClick={startTimer} disabled={expired && durationMinutes <= 0}>
+              Iniciar
+            </button>
+          ) : (
+            <button className={styles.timerBtn} onClick={pauseTimer}>
+              Pausar
+            </button>
+          )}
+          <button className={`${styles.timerBtn} ${styles.timerBtnGhost}`} onClick={resetTimer}>
+            Resetar
+          </button>
+        </div>
+      </section>
+
+      <section className={styles.configSection}>
+        <h2 className={styles.configTitle}>Jogador 1</h2>
+        <ConfigPlayerCard
+          player={gameState.player1}
+          playerNum={1}
+          onNameChange={updateName}
+          onRecordChange={updateRecord}
+          onColorsChange={updateColors}
+        />
+      </section>
+
+      <section className={styles.configSection}>
+        <h2 className={styles.configTitle}>Jogador 2</h2>
+        <ConfigPlayerCard
+          player={gameState.player2}
+          playerNum={2}
+          onNameChange={updateName}
+          onRecordChange={updateRecord}
+          onColorsChange={updateColors}
+        />
+      </section>
     </div>
   );
 }
 
 export default function Controller() {
+  const [tab, setTab] = useState("lore");
   const {
     gameState, connected, loading,
-    updateLore, updateName, setSeriesType, recordWin,
-    setRodada, updateRecord, resetMatch,
-    MAX_LORE, WINS_NEEDED, TOTAL_GAMES,
+    updateLore, updateName, updateRecord, updateColors, updateRound,
+    setTimerDuration, startTimer, pauseTimer, resetTimer,
+    setSeriesType, recordWin, resetMatch,
+    MAX_LORE, WINS_NEEDED,
   } = useGameState("partida1");
 
   const seriesType = gameState.series?.type ?? "BO3";
+  const timer = useSyncedTimer(gameState.timer);
 
   return (
     <div className={styles.root}>
@@ -205,80 +378,99 @@ export default function Controller() {
         </div>
       </header>
 
-      {/* Rodada picker */}
-      {!loading && (
-        <div className={styles.rodadaRow}>
-          <NumberPicker
-            label="Rodada"
-            value={gameState.rodada ?? 1}
-            onDecrement={() => setRodada(-1)}
-            onIncrement={() => setRodada(1)}
-            min={1}
-          />
-        </div>
-      )}
-
-      {/* Series type selector */}
-      <div className={styles.seriesSelector}>
-        {["BO1", "BO3", "BO5"].map((type) => (
-          <button
-            key={type}
-            className={`${styles.seriesBtn} ${seriesType === type ? styles.seriesBtnActive : ""}`}
-            onClick={() => setSeriesType(type)}
-          >
-            {type}
-          </button>
-        ))}
-      </div>
-
-      {/* Series progress */}
-      {!loading && (
-        <SeriesRow
-          series={gameState.series}
-          WINS_NEEDED={WINS_NEEDED}
-          TOTAL_GAMES={TOTAL_GAMES}
-        />
-      )}
-
-      {loading ? (
-        <div className={styles.loading}>Conectando...</div>
-      ) : (
-        <main className={styles.main}>
-          <PlayerPanel
-            player={gameState.player1}
-            playerNum={1}
-            onLoreChange={updateLore}
-            onNameChange={updateName}
-            onWin={recordWin}
-            onRecord={updateRecord}
-            series={gameState.series}
-            WINS_NEEDED={WINS_NEEDED}
-            TOTAL_GAMES={TOTAL_GAMES}
-            maxLore={MAX_LORE}
-          />
-          <PlayerPanel
-            player={gameState.player2}
-            playerNum={2}
-            onLoreChange={updateLore}
-            onNameChange={updateName}
-            onWin={recordWin}
-            onRecord={updateRecord}
-            series={gameState.series}
-            WINS_NEEDED={WINS_NEEDED}
-            TOTAL_GAMES={TOTAL_GAMES}
-            maxLore={MAX_LORE}
-          />
-        </main>
-      )}
-
-      <footer className={styles.footer}>
-        <button className={styles.resetBtn} onClick={resetMatch}>
-          Resetar Série
+      <nav className={styles.tabs}>
+        <button
+          className={`${styles.tabBtn} ${tab === "lore" ? styles.tabBtnActive : ""}`}
+          onClick={() => setTab("lore")}
+        >
+          Lore
         </button>
-        <a className={styles.overlayLink} href="/overlay/full" target="_blank" rel="noopener noreferrer">
-          Ver Overlay
-        </a>
-      </footer>
+        <button
+          className={`${styles.tabBtn} ${tab === "config" ? styles.tabBtnActive : ""}`}
+          onClick={() => setTab("config")}
+        >
+          Config
+        </button>
+      </nav>
+
+      {tab === "lore" && (
+        <>
+          <div className={styles.roundBanner}>
+            <span className={styles.roundText}>{gameState.round}</span>
+            <span className={`${styles.roundTimer} ${timer.expired ? styles.timerExpired : ""}`}>
+              {timer.label}
+            </span>
+          </div>
+
+          <div className={styles.seriesSelector}>
+            {["BO1", "BO3", "BO5"].map((type) => (
+              <button
+                key={type}
+                className={`${styles.seriesBtn} ${seriesType === type ? styles.seriesBtnActive : ""}`}
+                onClick={() => setSeriesType(type)}
+              >
+                {type}
+              </button>
+            ))}
+          </div>
+
+          {!loading && (
+            <SeriesRow series={gameState.series} WINS_NEEDED={WINS_NEEDED} />
+          )}
+
+          {loading ? (
+            <div className={styles.loading}>Conectando...</div>
+          ) : (
+            <main className={styles.main}>
+              <PlayerPanel
+                player={gameState.player1}
+                playerNum={1}
+                onLoreChange={updateLore}
+                onWin={recordWin}
+                series={gameState.series}
+                WINS_NEEDED={WINS_NEEDED}
+                maxLore={MAX_LORE}
+              />
+              <PlayerPanel
+                player={gameState.player2}
+                playerNum={2}
+                onLoreChange={updateLore}
+                onWin={recordWin}
+                series={gameState.series}
+                WINS_NEEDED={WINS_NEEDED}
+                maxLore={MAX_LORE}
+              />
+            </main>
+          )}
+
+          <footer className={styles.footer}>
+            <button className={styles.resetBtn} onClick={resetMatch}>
+              Resetar Série
+            </button>
+            <a className={styles.overlayLink} href="/overlay/full" target="_blank" rel="noopener noreferrer">
+              Ver Overlay
+            </a>
+          </footer>
+        </>
+      )}
+
+      {tab === "config" && (
+        loading ? (
+          <div className={styles.loading}>Conectando...</div>
+        ) : (
+          <ConfigTab
+            gameState={gameState}
+            updateName={updateName}
+            updateRecord={updateRecord}
+            updateColors={updateColors}
+            updateRound={updateRound}
+            setTimerDuration={setTimerDuration}
+            startTimer={startTimer}
+            pauseTimer={pauseTimer}
+            resetTimer={resetTimer}
+          />
+        )
+      )}
     </div>
   );
 }
