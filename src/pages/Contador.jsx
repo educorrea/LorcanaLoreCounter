@@ -1,5 +1,6 @@
 import { useGameState } from "../hooks/useGameState";
 import { useSyncedTimer } from "../hooks/useSyncedTimer";
+import { usePwaManifest } from "../hooks/usePwaManifest";
 import { formatRecord } from "../constants/lorcana";
 import InkDots from "../components/InkDots";
 import styles from "./Controller.module.css";
@@ -102,6 +103,7 @@ function PlayerPanel({ player, playerNum, onLoreChange, onWin, series, WINS_NEED
 
 /** App do jogador: só lore + vitória da partida */
 export default function Contador() {
+  usePwaManifest("contador");
   const {
     gameState, connected, loading,
     updateLore, recordWin,

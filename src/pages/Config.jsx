@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useGameState } from "../hooks/useGameState";
 import { useSyncedTimer } from "../hooks/useSyncedTimer";
+import { usePwaManifest } from "../hooks/usePwaManifest";
 import { LORCANA_INKS } from "../constants/lorcana";
 import styles from "./Controller.module.css";
 
@@ -135,6 +136,7 @@ function ConfigPlayerCard({
 
 /** App do operador: nomes, rodada, timer, BO, reset, overlay */
 export default function Config() {
+  usePwaManifest("config");
   const {
     gameState, connected, loading,
     updateName, updateRecord, updateColors, updateRound,
@@ -164,6 +166,12 @@ export default function Config() {
         <div className={styles.loading}>Conectando...</div>
       ) : (
         <div className={styles.configMain}>
+          <p className={styles.installHint}>
+            Para instalar como app separado no Android: abra{" "}
+            <strong>/config</strong> no Chrome (não dentro do Contador) → menu ⋮ →
+            {" "}Instalar app / Adicionar à tela inicial.
+          </p>
+
           <section className={styles.configSection}>
             <h2 className={styles.configTitle}>Tipo de série</h2>
             <div className={styles.seriesSelector}>
