@@ -167,9 +167,18 @@ export default function Config() {
       ) : (
         <div className={styles.configMain}>
           <p className={styles.installHint}>
-            Para instalar como app separado no Android: abra{" "}
-            <strong>/config</strong> no Chrome (não dentro do Contador) → menu ⋮ →
-            {" "}Instalar app / Adicionar à tela inicial.
+            <strong>Apps separados no Android</strong>
+            <br />
+            1. Desinstale o app antigo “Lorcana/Contador” (segurar ícone →
+            Desinstalar).
+            <br />
+            2. No Chrome, abra <strong>/config/</strong> → ⋮ → Instalar app
+            (ícone azul).
+            <br />
+            3. No Chrome, abra <strong>/contador/</strong> → ⋮ → Instalar app
+            (ícone roxo).
+            <br />
+            Não instale de dentro de um app já instalado — use o Chrome.
           </p>
 
           <section className={styles.configSection}>
@@ -262,7 +271,7 @@ export default function Config() {
                 Ver Overlay
               </a>
             </div>
-            <a className={styles.contadorLink} href="/" target="_blank" rel="noopener noreferrer">
+            <a className={styles.contadorLink} href="/contador/" target="_blank" rel="noopener noreferrer">
               Abrir Contador (jogadores)
             </a>
           </section>
