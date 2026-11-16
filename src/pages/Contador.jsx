@@ -3,7 +3,8 @@ import { useSyncedTimer } from "../hooks/useSyncedTimer";
 import { usePwaManifest } from "../hooks/usePwaManifest";
 import { formatRecord } from "../constants/lorcana";
 import InkDots from "../components/InkDots";
-import styles from "./Controller.module.css";
+import shared from "./Controller.module.css";
+import styles from "./Contador.module.css";
 
 function Diamond({ filled, dim }) {
   return (
@@ -11,7 +12,7 @@ function Diamond({ filled, dim }) {
       width={dim}
       height={dim}
       viewBox="0 0 20 20"
-      className={`${styles.diamond} ${filled ? styles.diamondFilled : ""}`}
+      className={`${shared.diamond} ${filled ? shared.diamondFilled : ""}`}
     >
       <polygon points="10,1 19,10 10,19 1,10" strokeWidth="1.5" />
     </svg>
@@ -32,30 +33,29 @@ function PlayerPanel({ player, playerNum, onLoreChange, onWin, series, WINS_NEED
   const pct = Math.round((player.lore / maxLore) * 100);
 
   return (
-    <div className={`${styles.playerCard} ${won ? styles.won : ""}`}>
-      <div className={styles.playerHeader}>
-        <div className={styles.playerIdentity}>
-          <span className={styles.nameDisplay}>{player.name}</span>
-          <div className={styles.metaRow}>
-            <InkDots colors={player.colors} size={18} />
-            <span className={styles.recordText}>{formatRecord(player.record)}</span>
+    <div className={`${styles.card} ${won ? styles.cardWon : ""}`}>
+      <div className={styles.header}>
+        <div className={styles.identity}>
+          <span className={styles.name}>{player.name}</span>
+          <div className={styles.meta}>
+            <InkDots colors={player.colors} size={16} />
+            <span className={styles.record}>{formatRecord(player.record)}</span>
           </div>
         </div>
-
-        <div className={styles.playerDiamonds}>
+        <div className={styles.diamonds}>
           {Array.from({ length: total }).map((_, i) => (
             <Diamond key={i} filled={i < myWins} dim={14} />
           ))}
         </div>
       </div>
 
-      <div className={styles.loreDisplay}>
-        <span className={styles.loreNumber}>{player.lore}</span>
+      <div className={styles.loreWrap}>
+        <span className={styles.lore}>{player.lore}</span>
         <span className={styles.loreMax}>/{maxLore}</span>
       </div>
 
-      <div className={styles.progressBar}>
-        <div className={styles.progressFill} style={{ width: `${pct}%` }} />
+      <div className={styles.bar}>
+        <div className={styles.barFill} style={{ width: `${pct}%` }} />
       </div>
 
       <div className={styles.buttons}>
@@ -91,7 +91,7 @@ function PlayerPanel({ player, playerNum, onLoreChange, onWin, series, WINS_NEED
 
       {!seriesOver && (
         <button
-          className={`${styles.winBtn} ${won ? styles.winBtnHighlight : ""}`}
+          className={`${styles.winBtn} ${won ? styles.winBtnHot : ""}`}
           onClick={() => onWin(playerKey)}
         >
           {player.name} venceu o jogo {games.length + 1}
@@ -101,7 +101,7 @@ function PlayerPanel({ player, playerNum, onLoreChange, onWin, series, WINS_NEED
   );
 }
 
-/** App do jogador: só lore + vitória da partida */
+/** App do jogador: modo mesa (P1 invertido) + paisagem lado a lado */
 export default function Contador() {
   usePwaManifest("contador");
   const {
@@ -112,30 +112,33 @@ export default function Contador() {
 
   const timer = useSyncedTimer(gameState.timer);
 
+  const midBar = (
+    <div className={styles.midBar}>
+      <span className={styles.roundText}>Rodada {gameState.round}</span>
+      <span className={`${styles.timer} ${timer.expired ? styles.timerExpired : ""}`}>
+        {timer.label}
+      </span>
+      <div className={styles.statusWrap}>
+        <span className={`${styles.dot} ${connected ? styles.dotOnline : styles.dotOffline}`} />
+        <span className={styles.status}>{connected ? "Online" : "Offline"}</span>
+      </div>
+    </div>
+  );
+
+  if (loading) {
+    return (
+      <div className={styles.root}>
+        {midBar}
+        <div className={styles.loading}>Conectando...</div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.root}>
-      <header className={styles.header}>
-        <div className={styles.headerLeft}>
-          <h1 className={styles.title}>Lorcana</h1>
-          <span className={styles.subtitle}>Contador</span>
-        </div>
-        <div className={styles.headerRight}>
-          <span className={`${styles.dot} ${connected ? styles.dotOnline : styles.dotOffline}`} />
-          <span className={styles.status}>{connected ? "Online" : "Offline"}</span>
-        </div>
-      </header>
-
-      <div className={styles.roundBanner}>
-        <span className={styles.roundText}>Rodada {gameState.round}</span>
-        <span className={`${styles.roundTimer} ${timer.expired ? styles.timerExpired : ""}`}>
-          {timer.label}
-        </span>
-      </div>
-
-      {loading ? (
-        <div className={styles.loading}>Conectando...</div>
-      ) : (
-        <main className={`${styles.main} ${styles.mainContador}`}>
+      <div className={styles.board}>
+        {/* Em pé: este lado fica invertido para o jogador do outro lado da mesa */}
+        <section className={`${styles.seat} ${styles.seatTop}`}>
           <PlayerPanel
             player={gameState.player1}
             playerNum={1}
@@ -145,6 +148,11 @@ export default function Contador() {
             WINS_NEEDED={WINS_NEEDED}
             maxLore={MAX_LORE}
           />
+        </section>
+
+        {midBar}
+
+        <section className={`${styles.seat} ${styles.seatBottom}`}>
           <PlayerPanel
             player={gameState.player2}
             playerNum={2}
@@ -154,8 +162,8 @@ export default function Contador() {
             WINS_NEEDED={WINS_NEEDED}
             maxLore={MAX_LORE}
           />
-        </main>
-      )}
+        </section>
+      </div>
     </div>
   );
 }
