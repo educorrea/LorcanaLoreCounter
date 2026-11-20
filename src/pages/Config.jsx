@@ -141,8 +141,10 @@ export default function Config() {
     gameState, connected, loading,
     updateName, updateRecord, updateColors, updateRound,
     setTimerDuration, startTimer, pauseTimer, resetTimer,
-    setSeriesType, resetMatch,
+    setSeriesType, resetMatch, undoLastAction,
   } = useGameState("partida1");
+
+  const canUndo = Boolean(gameState.lastAction);
 
   const seriesType = gameState.series?.type ?? "BO3";
   const { label, expired } = useSyncedTimer(gameState.timer);
@@ -249,6 +251,14 @@ export default function Config() {
           <section className={styles.configSection}>
             <h2 className={styles.configTitle}>Série & Overlay</h2>
             <div className={styles.configActions}>
+              <button
+                className={styles.undoBtn}
+                type="button"
+                onClick={undoLastAction}
+                disabled={!canUndo}
+              >
+                Desfazer última ação
+              </button>
               <button className={styles.resetBtn} onClick={resetMatch}>
                 Resetar Série
               </button>
@@ -256,6 +266,9 @@ export default function Config() {
                 Ver Overlay
               </a>
             </div>
+            <a className={styles.contadorLink} href="/timer" target="_blank" rel="noopener noreferrer">
+              Abrir Tempo na TV
+            </a>
             <a className={styles.contadorLink} href="/contador/" target="_blank" rel="noopener noreferrer">
               Abrir Contador (jogadores)
             </a>

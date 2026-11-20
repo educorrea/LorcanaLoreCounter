@@ -35,6 +35,7 @@ const defaultState = {
     running: false,
     endsAt: null,
   },
+  lastAction: null, // snapshot to undo lore / win
 };
 
 function clamp(value) {
@@ -68,16 +69,41 @@ function normalizeTimer(timer) {
   };
 }
 
+function normalizeGames(games) {
+  if (!Array.isArray(games)) return [];
+  return games.filter((g) => g === "p1" || g === "p2");
+}
+
+function normalizeLastAction(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  return {
+    kind: raw.kind === "win" ? "win" : "lore",
+    player1Lore: typeof raw.player1Lore === "number" ? clamp(raw.player1Lore) : 0,
+    player2Lore: typeof raw.player2Lore === "number" ? clamp(raw.player2Lore) : 0,
+    games: normalizeGames(raw.games),
+  };
+}
+
+function snapshotFromData(data, kind) {
+  return {
+    kind,
+    player1Lore: typeof data?.player1?.lore === "number" ? clamp(data.player1.lore) : 0,
+    player2Lore: typeof data?.player2?.lore === "number" ? clamp(data.player2.lore) : 0,
+    games: normalizeGames(data?.series?.games),
+  };
+}
+
 function normalizeState(data) {
   return {
     player1: normalizePlayer(data?.player1, "Jogador 1", ["amber", "amethyst"]),
     player2: normalizePlayer(data?.player2, "Jogador 2", ["ruby", "sapphire"]),
     series: {
       type: data?.series?.type && WINS_NEEDED[data.series.type] ? data.series.type : "BO3",
-      games: Array.isArray(data?.series?.games) ? data.series.games : [],
+      games: normalizeGames(data?.series?.games),
     },
     round: normalizeRound(data?.round),
     timer: normalizeTimer(data?.timer),
+    lastAction: normalizeLastAction(data?.lastAction),
   };
 }
 
@@ -124,11 +150,19 @@ export function useGameState(matchId = "default") {
   }, [matchId]);
 
   const updateLore = useCallback(async (player, delta) => {
+    const snap = await get(matchRef);
+    const data = snap.val();
+    if (!data) return;
+
     const key = player === 1 ? "player1" : "player2";
-    const loreRef = ref(db, `matches/${matchId}/${key}/lore`);
-    const snap = await get(loreRef);
-    const current = snap.val() ?? 0;
-    await set(loreRef, clamp(current + delta));
+    const current = typeof data[key]?.lore === "number" ? data[key].lore : 0;
+    const next = clamp(current + delta);
+    if (next === current) return;
+
+    await update(matchRef, {
+      lastAction: snapshotFromData(data, "lore"),
+      [`${key}/lore`]: next,
+    });
   }, [matchId]);
 
   const updateName = useCallback(async (player, name) => {
@@ -200,10 +234,12 @@ export function useGameState(matchId = "default") {
   }, [matchId]);
 
   const setSeriesType = useCallback(async (type) => {
-    await set(ref(db, `matches/${matchId}/series`), { type, games: [] });
-    // Reset lore when changing series type
-    await set(ref(db, `matches/${matchId}/player1/lore`), 0);
-    await set(ref(db, `matches/${matchId}/player2/lore`), 0);
+    await update(matchRef, {
+      series: { type, games: [] },
+      "player1/lore": 0,
+      "player2/lore": 0,
+      lastAction: null,
+    });
   }, [matchId]);
 
   const recordWin = useCallback(async (player) => {
@@ -212,7 +248,7 @@ export function useGameState(matchId = "default") {
     if (!data) return;
 
     const series = data.series ?? defaultState.series;
-    const games = [...(series.games ?? []), player];
+    const games = [...normalizeGames(series.games), player];
     const type = series.type ?? "BO3";
     const winsNeeded = WINS_NEEDED[type] ?? 2;
 
@@ -220,30 +256,48 @@ export function useGameState(matchId = "default") {
     const p2Wins = games.filter((g) => g === "p2").length;
     const seriesOver = p1Wins >= winsNeeded || p2Wins >= winsNeeded;
 
-    await set(ref(db, `matches/${matchId}/series/games`), games);
+    const patch = {
+      lastAction: snapshotFromData(data, "win"),
+      "series/games": games,
+    };
 
     // Reset lore for next game unless series is over
     if (!seriesOver) {
-      await set(ref(db, `matches/${matchId}/player1/lore`), 0);
-      await set(ref(db, `matches/${matchId}/player2/lore`), 0);
+      patch["player1/lore"] = 0;
+      patch["player2/lore"] = 0;
     }
+
+    await update(matchRef, patch);
+  }, [matchId]);
+
+  const undoLastAction = useCallback(async () => {
+    const snap = await get(matchRef);
+    const data = snap.val();
+    if (!data) return;
+
+    const lastAction = normalizeLastAction(data.lastAction);
+    if (!lastAction) return;
+
+    await update(matchRef, {
+      "player1/lore": lastAction.player1Lore,
+      "player2/lore": lastAction.player2Lore,
+      "series/games": lastAction.games,
+      lastAction: null,
+    });
   }, [matchId]);
 
   const resetMatch = useCallback(async () => {
     const snap = await get(matchRef);
     const data = snap.val();
     const normalized = normalizeState(data ?? {});
+    // Preserva o timer — só o botão Resetar do topo zera o tempo
     await set(matchRef, {
       player1: { ...normalized.player1, lore: 0 },
       player2: { ...normalized.player2, lore: 0 },
       series: { type: normalized.series.type, games: [] },
       round: normalized.round,
-      timer: {
-        durationSeconds: normalized.timer.durationSeconds,
-        remainingSeconds: normalized.timer.durationSeconds,
-        running: false,
-        endsAt: null,
-      },
+      timer: normalized.timer,
+      lastAction: null,
     });
   }, [matchId]);
 
@@ -262,6 +316,7 @@ export function useGameState(matchId = "default") {
     resetTimer,
     setSeriesType,
     recordWin,
+    undoLastAction,
     resetMatch,
     MAX_LORE,
     WINS_NEEDED,
