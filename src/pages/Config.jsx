@@ -266,6 +266,9 @@ export default function Config() {
                 Ver Overlay
               </a>
             </div>
+            <a className={styles.contadorLink} href="/timer" target="_blank" rel="noopener noreferrer">
+              Abrir Tempo na TV
+            </a>
             <a className={styles.contadorLink} href="/contador/" target="_blank" rel="noopener noreferrer">
               Abrir Contador (jogadores)
             </a>
