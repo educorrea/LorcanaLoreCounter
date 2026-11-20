@@ -106,11 +106,12 @@ export default function Contador() {
   usePwaManifest("contador");
   const {
     gameState, connected, loading,
-    updateLore, recordWin,
+    updateLore, recordWin, undoLastAction,
     MAX_LORE, WINS_NEEDED,
   } = useGameState("partida1");
 
   const timer = useSyncedTimer(gameState.timer);
+  const canUndo = Boolean(gameState.lastAction);
 
   const midBar = (
     <div className={styles.midBar}>
@@ -118,9 +119,21 @@ export default function Contador() {
       <span className={`${styles.timer} ${timer.expired ? styles.timerExpired : ""}`}>
         {timer.label}
       </span>
-      <div className={styles.statusWrap}>
-        <span className={`${styles.dot} ${connected ? styles.dotOnline : styles.dotOffline}`} />
-        <span className={styles.status}>{connected ? "Online" : "Offline"}</span>
+      <div className={styles.midActions}>
+        <button
+          type="button"
+          className={styles.undoBtn}
+          onClick={undoLastAction}
+          disabled={!canUndo}
+          aria-label="Desfazer última ação"
+          title="Desfazer última ação"
+        >
+          Desfazer
+        </button>
+        <div className={styles.statusWrap}>
+          <span className={`${styles.dot} ${connected ? styles.dotOnline : styles.dotOffline}`} />
+          <span className={styles.status}>{connected ? "Online" : "Offline"}</span>
+        </div>
       </div>
     </div>
   );
